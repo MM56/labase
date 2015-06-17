@@ -1,0 +1,10 @@
+#notifyElem, #__bs_notify__ {
+    display: none !important;
+}
+
+#stats {
+    position: absolute;
+    z-index: 9999;
+    right: 0;
+    top: 0;
+}

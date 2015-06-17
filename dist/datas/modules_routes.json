@@ -1,0 +1,28 @@
+{
+	"modules": [
+		{
+			"id": "a",
+			"routes": ["/a"],
+			"modules": [
+				{
+					"id": "e",
+					"routes": ["/e"]
+				},
+				{
+					"id": "f",
+					"routes": ["/f"]
+				}
+			]
+		},
+		{
+			"id": "b",
+			"routes": ["/b"],
+			"modules": [
+				{
+					"id": "d",
+					"routes": ["/d"]
+				}
+			]
+		}
+	]
+}

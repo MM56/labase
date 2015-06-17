@@ -1,0 +1,32 @@
+#mainLoader {
+	z-index:99999;
+	background:#ccc;
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	position:absolute;
+	top:0;
+	left:0;
+}
+
+#usualLoader {
+	@include opacity(0);
+	position: absolute;
+	z-index: 99999;
+	width: 100%;
+	height:3px;
+	top:0;
+
+	&.opaque {
+		@include opacity(1);
+	}
+
+	.progress {
+		background:#ccc;
+		position:absolute;
+		top:0;
+		height:100%;
+		left:0;
+		width:0;
+	}
+}

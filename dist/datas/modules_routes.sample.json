@@ -1,0 +1,51 @@
+{
+	"modules": [
+		{
+			"id": "a",
+			"routes": ["/a"],
+			"modules": [
+				{
+					"id": "a1"
+				},
+				{
+					"id": "a2"
+				}
+			]
+		},
+		{
+			"id": "h"
+		},
+		{
+			"id": "b",
+			"routes": ["/b"],
+			"modules": [
+				{
+					"id": "c",
+					"modules": [
+						{
+							"id": "e",
+							"routes": ["/e"]
+						},
+						{
+							"id": "f",
+							"routes": ["/f"]
+						}
+					]
+				},
+				{
+					"id": "d",
+					"modules": [
+						{
+							"id": "g"
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": "page",
+			"routes": ["/page/:id"],
+			"tplPattern": "page{{id}}"
+		}
+	]
+}

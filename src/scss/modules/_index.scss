@@ -1,0 +1,33 @@
+.no-overflow {
+	overflow:hidden;
+}
+
+html, body, #root {
+	height:100%;
+	width:100%;
+}
+
+body {
+	@include apply-font($font-opensans-regular);
+	@extend .no-overflow;
+}
+.custom-scrollbar {
+	position: absolute;
+	z-index: 10000;
+	top: 0;
+	right: 0;
+	width: 15px;
+	height: 200px;
+	cursor: -moz-grab;
+	cursor:-webkit-grab;
+	cursor: url(/img/static/common/openhand.cur) 4 4, move;
+	.scroller {
+		display: block;
+		width:100%;
+		height:100%;
+		position:absolute;
+		top:0;
+		right:0;
+		background-color: #aaa;
+	}
+}

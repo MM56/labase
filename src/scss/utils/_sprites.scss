@@ -1,0 +1,34 @@
+@mixin sprite-width($sprite) {
+	width: nth($sprite, 5);
+}
+
+@mixin sprite-height($sprite) {
+	height: nth($sprite, 6);
+}
+
+@mixin sprite-position($sprite) {
+	$sprite-offset-x: nth($sprite, 3);
+	$sprite-offset-y: nth($sprite, 4);
+	background-position: $sprite-offset-x  $sprite-offset-y;
+}
+
+@mixin sprite-image($sprite) {
+	background-image: url($path-img + nth($sprite, 9));
+	@media
+	only screen and (-webkit-min-device-pixel-ratio: 2),
+	only screen and (   min--moz-device-pixel-ratio: 2),
+	only screen and (     -o-min-device-pixel-ratio: 2/1),
+	only screen and (        min-device-pixel-ratio: 2),
+	only screen and (                min-resolution: 192dpi),
+	only screen and (                min-resolution: 2dppx) {
+		background-image: url($path-img + nth($sprite, 10));
+		background-size: nth($sprite, 7) nth($sprite, 8);
+	}
+}
+
+@mixin sprite($sprite) {
+	@include sprite-image($sprite);
+	@include sprite-position($sprite);
+	@include sprite-width($sprite);
+	@include sprite-height($sprite);
+}

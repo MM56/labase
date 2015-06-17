@@ -1,0 +1,27 @@
+{
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-browser-sync": "2.1.2",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-coffee": "0.13.0",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-contrib-uglify": "^0.9.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-image": "0.6.5",
+    "grunt-newer": "^1.1.1",
+    "grunt-prompt": "1.1.0",
+    "grunt-sass": "^0.18.1",
+    "grunt-spritesmith": "^4.2.0",
+    "handlebars": "^3.0.1",
+    "js-yaml": "^3.2.7",
+    "matchdep": "^0.3.0"
+  },
+  "name": "labase",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:MM56/labase.git"
+  }
+}

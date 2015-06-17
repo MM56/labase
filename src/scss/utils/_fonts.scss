@@ -1,0 +1,25 @@
+@mixin register-font($name, $file-name: false, $weight: false, $style: false) {
+	@if $file-name == false {
+		$file-name: $name;
+	}
+	@font-face {
+		font-family: quote($name);
+		src: url($path-webfonts + $file-name + ".eot");
+		src: url($path-webfonts + $file-name + '.eot?#iefix') format('embedded-opentype'),
+			 url($path-webfonts + $file-name + ".woff") format('woff'),
+			 url($path-webfonts + $file-name + ".ttf") format('truetype'),
+			 url($path-webfonts + $file-name + ".woff#" + $file-name) format('svg');
+		@if $weight {
+			font-weight: $weight;
+		}
+		@if $style {
+			font-style: $style;
+		}
+	}
+}
+
+@mixin apply-font($face) {
+	font-family: $face, Arial, sans-serif;
+	font-weight: normal;
+	font-style: normal;
+}

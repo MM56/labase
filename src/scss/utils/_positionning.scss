@@ -1,0 +1,74 @@
+	//   _|_|_|                        _|
+	// _|          _|_|    _|_|_|    _|_|_|_|    _|_|    _|  _|_|
+	// _|        _|_|_|_|  _|    _|    _|      _|_|_|_|  _|_|
+	// _|        _|        _|    _|    _|      _|        _|
+	//   _|_|_|    _|_|_|  _|    _|      _|_|    _|_|_|  _|
+
+@mixin centerAbsolute($width, $height) {
+	@include centerAbsoluteHor($width);
+	@include centerAbsoluteVert($height, false);
+}
+
+@mixin centerAbsoluteHor($width, $includePosition: true) {
+	@if $includePosition == true {
+		position: absolute;
+	}
+	width: $width;
+	left: 50%;
+	margin-left: -($width * .5);
+}
+
+@mixin centerAbsoluteVert($height, $includePosition: true) {
+	@if $includePosition == true {
+		position: absolute;
+	}
+	height: $height;
+	top: 50%;
+	margin-top: -($height * .5);
+}
+
+@mixin layerProp($width, $height, $top, $left, $zIndex: null, $imgName: null, $imgPath: ''){
+	position: absolute;
+	width: #{$width}px;
+	height: #{$height}px;
+	top : #{$top}px;
+	left: #{$left}px;
+	@if $zIndex != null { z-index: $zIndex; }
+	@if $imgName != null { background: url(#{$imgPath}#{$imgName}) 0px 0px no-repeat; }
+}
+
+@mixin bgCover {
+	-webkit-background-size: cover !important;
+	-ms-background-size: cover !important;
+	-moz-background-size: cover !important;
+	-o-background-size: cover !important;
+	background-size: cover !important;
+}
+
+@mixin bgContain {
+	-webkit-background-size: contain !important;
+	-ms-background-size: contain !important;
+	-moz-background-size: contain !important;
+	-o-background-size: contain !important;
+	background-size: contain !important;
+}
+
+.inliner {
+    height: 100%;
+}
+
+.inliner,
+.inliner + * {
+    display: inline-block;
+    vertical-align: middle;
+	*display: inline;
+	*zoom: 1;
+}
+
+@mixin optimize() {
+	@include transform-style(preserve-3d);
+	@include backface-visibility(hidden);
+	@include translate3d(0,0,0);
+	@include perspective(1000);
+	will-change:transform;
+}

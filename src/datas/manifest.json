@@ -1,0 +1,119 @@
+[
+	{
+		"id": "defaultDesktop",
+		"files": [
+		]
+	},
+	{
+		"id": "page1",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/page1.hbs"
+			}
+		],
+		"dependencies" : [
+			"defaultDesktop"
+		]
+	},
+	{
+		"id": "page2",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/page2.hbs"
+			}
+		]
+	},
+	{
+		"id": "a",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/a.hbs"
+			}
+		]
+	},
+	{
+		"id": "a1",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/a1.hbs"
+			}
+		]
+	},
+	{
+		"id": "a2",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/a2.hbs"
+			}
+		]
+	},
+	{
+		"id": "b",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/b.hbs"
+			}
+		]
+	},
+	{
+		"id": "c",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/c.hbs"
+			}
+		]
+	},
+	{
+		"id": "d",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/d.hbs"
+			}
+		]
+	},
+	{
+		"id": "e",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/e.hbs"
+			}
+		]
+	},
+	{
+		"id": "f",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/f.hbs"
+			}
+		]
+	},
+	{
+		"id": "g",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/g.hbs"
+			}
+		]
+	},
+	{
+		"id": "h",
+		"files": [
+			{
+				"id": "tpl",
+				"src": "tpl/partials/h.hbs"
+			}
+		]
+	}
+
+]

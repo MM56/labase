@@ -1,0 +1,1 @@
+class VideoExtend extends Video

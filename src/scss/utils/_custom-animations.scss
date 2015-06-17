@@ -1,0 +1,18 @@
+@mixin keyframes($name) {
+	@-webkit-keyframes #{$name} {
+		@content; 
+	}
+	@-moz-keyframes #{$name} {
+		@content;
+	}
+	@-ms-keyframes #{$name} {
+		@content;
+	}
+	@keyframes #{$name} {
+		@content;
+	} 
+}
+@include keyframes(rotation_0_360) {
+    0% { @include rotate(0deg) }
+    100% { @include rotate(360deg) }
+}

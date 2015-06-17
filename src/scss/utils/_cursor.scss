@@ -1,0 +1,18 @@
+@mixin cursor($path, $name, $important: false) {
+	$suffix: "";
+	@if $important == true {
+		$suffix: !important;
+	}
+	cursor: image-set(url(#{$path}#{$name}.png) 1x, url(#{$path}#{$name}_@2x.png) 2x) 13 0, pointer #{$suffix};
+	cursor: -webkit-image-set(url(#{$path}#{$name}.png) 1x, url(#{$path}#{$name}_@2x.png) 2x) 13 0, pointer #{$suffix};
+	cursor: url(#{$path}#{$name}.png) 13 0, pointer #{$suffix};
+}
+
+@mixin unselected {
+	-webkit-touch-callout: none;
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}

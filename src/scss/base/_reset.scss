@@ -1,0 +1,78 @@
+html,body {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
+	-webkit-tap-highlight-color: 0;
+	-ms-text-size-adjust: 100%;
+	font-size: 100%;
+	width: 100%;
+}
+
+html {
+	font-size: 62.5%;
+}
+
+* {
+	position: relative;
+	padding: 0;
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+	display: block;
+	cursor:pointer;
+}
+
+a img {
+	border: 0;
+}
+
+a:active,a:active * {
+	-moz-outline-style: none !important;
+	background-color: transparent;
+	outline: 0 !important;
+}
+
+a:focus,a:focus * {
+	-moz-outline-style: none !important;
+	outline: 0 !important;
+}
+
+a:hover,a:active {
+	outline: 0;
+}
+
+:focus {
+	outline: 0;
+}
+
+::-moz-focus-inner {
+	border: 0;
+}
+
+ul,li {
+	-webkit-margin-before: 0;
+	-webkit-padding-start: 0;
+	-webkit-margin-after: 0;
+	-webkit-margin-start: 0;
+	-webkit-margin-end: 0;
+	list-style: none;
+	display: block;
+}
+
+.clear {
+	clear: both;
+}
+::-ms-clear {
+	display: none;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+	-webkit-appearance: none; 
+	margin: 0; 
+}

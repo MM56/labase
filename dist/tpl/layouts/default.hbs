@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html class="{{detect.device}} {{detect.os}} {{detect.browser}} {{GLOBAL.locale}} no-js" lang="{{GLOBAL.locale}}">
+<head>
+	<title>{{header.title}}</title>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta http-equiv="cleartype" content="on" />
+	<meta http-equiv="expires" content="0" />
+	<meta name="description" content="{{header.description}}" />
+	<meta name="robots" content="index, follow" />
+	<meta name="revisit-after" content="3 days" />
+	<meta name="audience" content="all" />
+	<meta name="author" content="" />
+	<meta name="copyright" content="" />
+	<meta name="publisher" content="" />
+	<!-- MOBILE -->
+	<meta name='HandheldFriendly' content='true' />
+	<meta name='format-detection' content='telephone=no' />
+	<meta name="msapplication-tap-highlight" content="no">
+	<meta name="apple-mobile-web-app-title" content="{{header.title}}" />
+	<meta name="apple-mobile-web-app-capable" content="no" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no{{^GLOBAL.isDesktop}},minimal-ui{{/GLOBAL.isDesktop}}" />
+	<!-- FB OPENGRAPH -->
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="{{header.sharefb}}" />
+	<meta property="og:description" content="&#8291;" />
+	<meta property="og:site_name" content="{{header.title}}" />
+	<meta property="og:image" content="{{GLOBAL.baseURL}}" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:url" content="{{GLOBAL.baseURL}}" />
+	<!-- TWITTER CARD -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="{{header.title}}" />
+	<meta name="twitter:site" content="{{header.title}}" />
+	<meta name="twitter:image" content="{{GLOBAL.baseURL}}" />
+	<meta name="twitter:url" content="{{GLOBAL.baseURL}}" />
+	<!-- GOOGLE PLUS -->
+	<meta itemprop="name" content="{{header.title}}" />
+	<meta itemprop="description" content="{{header.description}}" />
+	<!-- LINKS -->
+	<link type="text/plain" rel="author" href="/humans.txt" />
+	<link rel="shortcut icon" href="/favicon.ico" />
+	<link rel="apple-touch-icon-precomposed" href="{{GLOBAL.basePath}}img/static/common/mobile/apple-touch-icon-precomposed.png" />
+	<link rel="stylesheet" type="text/css" href="{{GLOBAL.basePath}}css/style.{{#GLOBAL.isDesktop}}desktop{{/GLOBAL.isDesktop}}{{^GLOBAL.isDesktop}}mobile{{/GLOBAL.isDesktop}}.css" media="screen, projection" />
+	<!--[if lte IE 9]>
+		<script>window.location = "{{GLOBAL.basePath}}ie/";</script>
+	<![endif]-->
+	<script type="text/javascript">
+	var baseURL = "{{GLOBAL.baseURL}}";
+	var currentURL = "{{GLOBAL.currentURL}}";
+	var basePath = "{{GLOBAL.basePath}}";
+	var mediasPath = "{{medias_server}}";
+	var locale = "{{GLOBAL.locale}}";
+	var defaultTemplates = {
+		{{#if GLOBAL.defaultTemplates}}
+		{{#GLOBAL.defaultTemplates}}
+			{{{.}}}
+		{{/GLOBAL.defaultTemplates}}
+		{{/if}}
+	};
+	var noLocaleInRoute = {{GLOBAL.noLocaleInRoute}};
+	</script>
+</head>
+<body>
+	<!--[if (!IE)|(gte IE 9)]><!-->
+	<div id="root" class="root-module-wrapper">
+		{{> modules}}
+		{{> loader/mainLoader }}
+		{{> loader/usualLoader }}
+		{{> notifier/orientation }}
+	</div>
+	{{>javascripts}}
+</body>
+</html>
