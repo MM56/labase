@@ -5,10 +5,10 @@ module.exports =
 			"<%= globalConfig.buildPath %>/css/*"
 			"<%= globalConfig.buildPath %>/js/*"
 			"<%= globalConfig.buildPath %>/manifest.appcache"
+			"<%= globalConfig.buildPath %>/img/sprites"
 		]
 		sprites: [
-			"<%= globalConfig.buildPath %>/img/sprites/**/1x-*"
-			"<%= globalConfig.buildPath %>/img/sprites/**/2x-*"
+			"<%= globalConfig.buildPath %>/img/sprites"
 		]
 		img: [
 			"<%= globalConfig.buildPath %>/img/static"

@@ -8,13 +8,14 @@ module.exports = (grunt) ->
             tpl = 'grunt/config/template@1x.mustache'
             tpl = 'grunt/config/template@2x.mustache' if path.indexOf("2x") > -1
 
-            imgPath = "sprites/" + path.replace(options.srcPath + "/img/","") + ".png"
+            imgPath = "sprites/" + path.replace(options.srcPath + "/img/sprites/","") + ".png"
 
             padding = 4
             padding = 8 if path.indexOf("2x") > -1
+
             obj = 
                 src : path + "/*.png"
-                dest : "<%= globalConfig.buildPath %>/img/sprites/" + path.replace(options.srcPath + "/img/","") + ".png"
+                dest : "<%= globalConfig.buildPath %>/img/sprites/" + path.replace(options.srcPath + "/img/sprites/","") + ".png"
                 destCss : "<%= globalConfig.srcPath %>/scss/sprites/sprite-"+index+".scss"
                 cssTemplate: tpl
                 padding: padding
