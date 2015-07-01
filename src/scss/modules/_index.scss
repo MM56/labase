@@ -31,3 +31,13 @@ body {
 		background-color: #aaa;
 	}
 }
+
+.transparent {
+	@include opacity(0);
+	@include transition(opacity 0.3s ease-in-out);
+}
+
+.opaque {
+	@include opacity(1);
+	@include transition(opacity 0.3s ease-in-out);
+}

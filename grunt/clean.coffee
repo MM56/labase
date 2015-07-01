@@ -4,6 +4,7 @@ module.exports =
 			"<%= globalConfig.buildPath %>/conf/*"
 			"<%= globalConfig.buildPath %>/css/*"
 			"<%= globalConfig.buildPath %>/js/*"
+			"<%= globalConfig.buildPath %>/manifest.appcache"
 		]
 		sprites: [
 			"<%= globalConfig.buildPath %>/img/sprites/**/1x-*"
@@ -16,7 +17,6 @@ module.exports =
 			"<%= globalConfig.buildPath %>/js/*"
 			"!<%= globalConfig.buildPath %>/js/built*.js"
 		]
-
 		sass: [
 			"<%= globalConfig.srcPath %>/scss/sprites"
 		]

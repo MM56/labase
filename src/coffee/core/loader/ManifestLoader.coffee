@@ -2,7 +2,7 @@ class ManifestLoader
 
 	cache: null
 	cacheIds: null
-	defaults : {}
+	defaults: null
 	
 	separator = "."
 	loader = null
@@ -11,6 +11,7 @@ class ManifestLoader
 
 	constructor: (@basePath = "/", @data)->
 		@cache = {}
+		@defaults = {}
 		@cacheIds = []
 
 		@complete = new signals.Signal()
@@ -30,10 +31,10 @@ class ManifestLoader
 	onProgress: (event) =>
 		@progress.dispatch(event)
 
-	load: (datas, isConfig) =>
+	load: (datas) =>
 		files = datas
 		files = [datas] if typeof datas == "string"
-		files = @getFilesToLoad(files) if !isConfig?
+		files = @getFilesToLoad(files)
 		@reset(files)
 
 		filesToLoad = []
@@ -42,7 +43,6 @@ class ManifestLoader
 			if @cache[file.id]?
 				@onFileLoaded {item: {id: file.id}}
 			else
-				file.src = @getFileSrc(file) if isConfig?
 				obj = {id: file.id, src: file.src, data: file.infos}
 				obj.type = file.type if file.type?
 				filesToLoad.push obj
@@ -66,34 +66,32 @@ class ManifestLoader
 		id = loaderItem.id
 		nbFilesCached++
 
-		if id == "manifest" || id == "l10n" || id == "modulesRoutes"
-			@defaults[id] = loader.getResult id
-		else
-			if !@cache[id]?
-				@cache[id] = {item: loader.getResult id}
-				@cache[id].mapping = loaderItem.data.data.mapping if loaderItem.data?.data?.mapping?
-				batchId = loaderItem.data.batchId
-				fileId = loaderItem.data.fileId
-				# if it's a pack, cache files mapped
-				if (fileId.indexOf("packConf") != -1 && @cache[batchId + separator + "packFile"]?) || (fileId.indexOf("packFile") != -1 && @cache[batchId + separator + "packConf"]?)
-					packConfCached = @cache[batchId + separator + "packConf"]
-					packConf = packConfCached.item
-					packFile = @cache[batchId + separator + "packFile"].item
-					mapping = packConfCached.mapping
-					mp = new Magipack(packFile, packConf)
-					for mappedObject in mapping
-						img = new Image()
-						img.src = mp.getURI(mappedObject.src)
-						@cache[batchId + separator + mappedObject.id] = {item: img}
+		if !@cache[id]?
+			@cache[id] = {item: loader.getResult id}
+			@cache[id].mapping = loaderItem.data.data.mapping if loaderItem.data?.data?.mapping?
+			batchId = loaderItem.data.batchId
+			fileId = loaderItem.data.fileId
+			# if it's a pack, cache files mapped
+			if (fileId.indexOf("packConf") != -1 && @cache[batchId + separator + "packFile"]?) || (fileId.indexOf("packFile") != -1 && @cache[batchId + separator + "packConf"]?)
+				packConfCached = @cache[batchId + separator + "packConf"]
+				packConf = packConfCached.item
+				packFile = @cache[batchId + separator + "packFile"].item
+				mapping = packConfCached.mapping
+				mp = new Magipack(packFile, packConf)
+				for mappedObject in mapping
+					img = new Image()
+					img.src = mp.getURI(mappedObject.src)
+					@cache[batchId + separator + mappedObject.id] = {item: img}
 
-			tplSuffix = separator + "tpl"
-			if id.indexOf(tplSuffix) == id.length - tplSuffix.length
-				@tplComplete.dispatch(@cache[id].item.slice(0), id.substring(0, id.indexOf(tplSuffix)))
+		tplSuffix = separator + "tpl"
+		if id.indexOf(tplSuffix) == id.length - tplSuffix.length
+			@tplComplete.dispatch(@cache[id].item.slice(0), id.substring(0, id.indexOf(tplSuffix)))
 
 	onFilesLoaded: () =>
-		loader.removeEventListener "fileload", @onFileLoaded
-		loader.removeEventListener "progress", @onProgress
-		loader.removeEventListener "complete", @onFilesLoaded
+		if loader?
+			loader.removeEventListener "fileload", @onFileLoaded
+			loader.removeEventListener "progress", @onProgress
+			loader.removeEventListener "complete", @onFilesLoaded
 		@complete.dispatch()
 
 	getFilesToLoad : (ids) =>

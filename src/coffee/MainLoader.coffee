@@ -1,6 +1,5 @@
 class MainLoader
 
-	count: 0
 	$elt : null
 
 	constructor: ->
@@ -23,14 +22,14 @@ class MainLoader
 		progress = e.progress * 100
 
 	onLoadComplete: () =>
-		@count++
-		@onDestroy() if @count > 1
+		@onDestroy()
 
 	onDestroy: () =>
-		Transition.fadeOut(@$elt[0], @onDestroyComplete)
+		@$elt.addClass "transparent"
 		app.manifestLoader.start.remove @onLoadStart
 		app.manifestLoader.progress.remove @onLoadProgress
 		app.manifestLoader.complete.remove @onLoadComplete
+		setTimeout @onDestroyComplete, 300
 
 	onDestroyComplete: () =>
 		@$elt.remove()

@@ -59,6 +59,9 @@
 				"id": "tpl",
 				"src": "tpl/partials/b.hbs"
 			}
+		],
+		"dependencies" : [
+			"defaultDesktop"
 		]
 	},
 	{
@@ -77,6 +80,9 @@
 				"id": "tpl",
 				"src": "tpl/partials/d.hbs"
 			}
+		],
+		"dependencies" : [
+			"defaultDesktop"
 		]
 	},
 	{
@@ -86,6 +92,9 @@
 				"id": "tpl",
 				"src": "tpl/partials/e.hbs"
 			}
+		],
+		"dependencies" : [
+			"defaultDesktop"
 		]
 	},
 	{
@@ -95,6 +104,9 @@
 				"id": "tpl",
 				"src": "tpl/partials/f.hbs"
 			}
+		],
+		"dependencies" : [
+			"defaultDesktop"
 		]
 	},
 	{

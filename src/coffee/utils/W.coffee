@@ -10,7 +10,6 @@ class W
 		@body = $('body')
 		@root = $('#root,html,body')
 		@orientationNotifier = $('#orientation-notifier')
-		@detect = new MobileDetect(window.navigator.userAgent)
 		@isPhone = @html.hasClass "phone"
 		@isIOS = @html.hasClass "ios"
 		@isTablet = @html.hasClass "tablet"

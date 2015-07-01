@@ -16,28 +16,29 @@ module.exports = (grunt) ->
 			"watch"
 		]
 		staging: [
-			"clean:all",
+			"clean:all"
 			"sprites"
-			"sass",
-			"clean:img",
-			"copy:img",
-			"clean:sprites",
-			"packImages",
-			"concat:vendors",
-			"coffee:staging",
+			"sass"
+			"clean:img"
+			"copy:img"
+			"clean:sprites"
+			"packImages"
+			"concat:vendors"
+			"coffee:staging"
 			"writeEnvFile:staging", "copy:staging"
+			"uglify"
 		]
 		prod: [
-			"clean:all",
+			"clean:all"
 			"sprites"
-			"sass",
-			"clean:img",
-			"copy:img",
-			"clean:sprites",
-			"packImages",
-			"concat:vendors",
-			"coffee:prod",
-			"writeEnvFile:prod", "copy:prod",
+			"sass"
+			"clean:img"
+			"copy:img"
+			"clean:sprites"
+			"packImages"
+			"concat:vendors"
+			"coffee:prod"
+			"writeEnvFile:prod", "copy:prod"
 			"uglify"
 		]
 	}

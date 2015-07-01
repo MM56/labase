@@ -18,13 +18,3 @@ class FakeModule extends BaseModule
 		if @$parentWrapper.selector == ".root-module-wrapper"
 			@$parentWrapper = $('#root')
 		# @id = ["a", "a1", "a2", "b", "c", "d", "g", "h"]
-
-	preload: =>
-		batches = window[@.__proto__.constructor.name].getBatches(@defaultBatches || @id)
-		# console.log @id, "preload", @.__proto__.constructor.name, batches
-		@load batches
-
-	@getBatches: (id) =>
-		# console.log "getBatches", id
-		return id if id?
-		return null

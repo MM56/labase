@@ -5,7 +5,6 @@
 			"vendor/modernizr.custom.min.js",
 			"vendor/jquery/jquery-2.1.1.min.js",
 			"vendor/greensock/TweenMax.min.js",
-			"vendor/mobile-detect.min.js",
 			"vendor/handlebars.js",
 			"vendor/createjs/preloadjs-0.6.1.min.js",
 			"vendor/createjs/soundjs-0.6.1.min.js",

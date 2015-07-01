@@ -48,6 +48,7 @@
 		<script>window.location = "{{GLOBAL.basePath}}ie/";</script>
 	<![endif]-->
 	<script type="text/javascript">
+	var env = "{{env}}";
 	var baseURL = "{{GLOBAL.baseURL}}";
 	var currentURL = "{{GLOBAL.currentURL}}";
 	var basePath = "{{GLOBAL.basePath}}";
@@ -60,6 +61,9 @@
 		{{/GLOBAL.defaultTemplates}}
 		{{/if}}
 	};
+	var l10nJSON = {{{l10n}}};
+	var manifestJSON = {{{manifest}}};
+	var routesJSON = {{{routes}}};
 	var noLocaleInRoute = {{GLOBAL.noLocaleInRoute}};
 	</script>
 </head>

@@ -32,7 +32,6 @@ function getDomain($host) {
 }
 
 $domain = getDomain($_SERVER["HTTP_HOST"]);
-
 $extraDatas = array(
 	"domain" => $domain
 );

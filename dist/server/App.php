@@ -12,8 +12,9 @@ class App {
 		"baseURL" => "",
 		"currentURL" => "",
 		"basePath" => "/",
-		"l10nFile" => "/datas/l10n/{{locale}}.json",
-		"modulesRoutesFile" => "/datas/modules_routes.json",
+		"manifestFile" => "{{basePath}}datas/manifest.json",
+		"l10nFile" => "{{basePath}}datas/l10n/{{locale}}.json",
+		"modulesRoutesFile" => "{{basePath}}datas/modules_routes.json",
 		"javascriptsFile" => "{{basePath}}datas/javascripts.json",
 		"layoutsFolder" => "{{basePath}}tpl/layouts",
 		"partialsFolder" => "{{basePath}}tpl/partials",
@@ -29,6 +30,7 @@ class App {
 	protected $detect;
 	protected $requestURI;
 	protected $noLocaleInRoute;
+	protected $forceLocaleRedirect;
 
 
 	public function __construct(array $configOptions = array()) {
@@ -89,6 +91,7 @@ class App {
 		$this->ensurePath();
 		$this->initTemplateEngine();
 		$this->loadL10n();
+		$this->loadManifest();
 		$this->loadModulesRoutes();
 		$this->buildModulesList();
 		$this->buildContent();
@@ -101,7 +104,7 @@ class App {
 			return;
 		}
 
-		$forceLocaleRedirect = false;
+		$this->forceLocaleRedirect = false;
 		$this->noLocaleInRoute = false;
 
 		// grab requested locale
@@ -113,17 +116,17 @@ class App {
 			$this->currentLocale = substr($escapedFragment, 0, 2);
 		} else {
 			$this->currentLocale = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-			$forceLocaleRedirect = true;
+			$this->forceLocaleRedirect = true;
 		}
 
 		// check if available locale
 		if(!in_array($this->currentLocale, $this->config["locales"])) {
 			$this->currentLocale = $this->config["locales"][0];
-			$forceLocaleRedirect = true;
+			$this->forceLocaleRedirect = true;
 		}
 
 		// redirect to an available locale if requested is not accepted
-		if($forceLocaleRedirect) {
+		if($this->forceLocaleRedirect) {
 			header("Location: " . $this->config["basePath"] . $this->currentLocale . "/");
 			exit();
 		}
@@ -154,17 +157,29 @@ class App {
 			}
 		}
 
-		/*
-		if($this->detect->isPhone() && !empty($this->config["forceMobileRedirect"]) && !preg_match("/(" . $this->currentLocale . "\/)?(" . addslashes($this->config["forceMobileRedirect"]) .")/i", $this->requestURI)) {
+		if((!$this->detect->isTablet() && $this->detect->isMobile()) && !empty($this->config["forceMobileRedirect"]) && !preg_match("/(" . $this->currentLocale . "\/)?(" . addslashes($this->config["forceMobileRedirect"]) .")/i", $this->requestURI)) {
 			$p = $this->config["basePath"];
 			if(!$this->noLocaleInRoute) {
 				$p .= $this->currentLocale . "/";
 			}
 			$p .= $this->config["forceMobileRedirect"];
+			$p .= $this->requestURI;
 			header("Location: " . $p);
 			exit();
+		}else {
+			if(!$this->detect->isTablet() && !$this->detect->isMobile() && strpos($this->requestURI, $this->config["forceMobileRedirect"]) === 1) {
+				$this->requestURI = str_replace("/" . $this->config["forceMobileRedirect"] . "/", "", $this->requestURI);
+				$p = $this->config["basePath"];
+				if(!$this->noLocaleInRoute) {
+					$p .= $this->currentLocale . "/";
+				}
+				$p .= $this->requestURI;
+				header("Location: " . $p);
+				exit();
+			}else {
+				
+			}
 		}
-		*/
 	}
 
 	protected function redirect($path) {
@@ -182,11 +197,19 @@ class App {
 		Handlebars\Autoloader::register();
 	}
 
-	protected function loadL10n() {
+	protected function loadManifest() {
 		$tplRenderer = new Handlebars\Handlebars();
-		$l10nFilePath = dirname(__FILE__) . "/.." . $tplRenderer->render($this->config["l10nFile"], array(
+		$manifestFilePath = $tplRenderer->render($this->config["manifestFile"], array(
 			"locale" => $this->currentLocale
 		));
+		$this->manifest = json_encode(self::getArrayContentFrom($manifestFilePath));
+	}
+
+	protected function loadL10n() {
+		$tplRenderer = new Handlebars\Handlebars();
+		$l10nFilePath = $tplRenderer->render($this->config["l10nFile"], array(
+ 			"locale" => $this->currentLocale
+ 		));
 		$this->l10n = self::getArrayContentFrom($l10nFilePath);
 	}
 
@@ -276,11 +299,7 @@ class App {
 			$detect["os"] = strtolower($this->detect->os());
 			$detect["browser"] = strtolower($this->detect->browser());
 		} else {
-			if(strpos($this->config["currentURL"],'/mobile') !== false) {
-				$detect["device"] = "nomobile";
-			} else {
-				$detect["device"] = "desktop";
-			}
+			$detect["device"] = "desktop";
 			if(preg_match('/linux/i', $this->detect->getUserAgent())) {
 				$detect["os"] = "linux";
 			} elseif(preg_match('/macintosh|mac os x/i', $this->detect->getUserAgent())) {
@@ -311,15 +330,18 @@ class App {
 			"locale" => $this->currentLocale,
 			"basePath" => $this->config["basePath"],
 			"isDesktop" => (($detect["device"] == "desktop" || $detect["device"] == "tablet") && strpos($this->config["currentURL"],'/mobile') === false),
-			"isNoMobile" => ($detect["device"] == "desktop" && strpos($this->config["currentURL"],'/mobile') !== false),
 			"noLocaleInRoute" => $noLocaleInRoute
 		);
 
 		// datas for template engine
-		$this->content = array_merge($this->l10n, array(
-			"isDev" => $this->config["env"] == "dev",
-			"scripts" => $scripts,
+		$this->content = array_merge(array(
+			"env" => $this->config["env"],
+			"l10n" => json_encode($this->l10n),
+			"manifest" => $this->manifest,
+			"routes" => $this->modulesRoutes,
 			"detect" => $detect,
+			"scripts" => $scripts,
+			"routes" => json_encode($this->modulesRoutes),
 			"GLOBAL" => $globalContent
 		), $this->config["extraDatas"]);
 

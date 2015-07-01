@@ -28,39 +28,26 @@ class App
 		@loadConfig()
 
 	loadConfig: =>
-		@manifestLoader.complete.add @onConfigLoaded
-		@manifestLoader.load [
-			{id: "modulesRoutes", src: "datas/modules_routes.json"},
-			{id: "manifest", src: "datas/manifest.json"},
-			# {id: "l10n", src: apiURL},
-			{id: "l10n", src: "datas/l10n/" + locale + ".json"},
-		], true
+		@manifestLoader.defaults["modulesRoutes"] = routesJSON
+		@manifestLoader.defaults["l10n"] = l10nJSON
+		@manifestLoader.defaults["manifest"] = manifestJSON
+		@onConfigLoaded()
 
 	onConfigLoaded: () =>
-		@manifestLoader.complete.remove @onConfigLoaded
-
-		if typeof @manifestLoader.defaults.l10n == "string"
-			@datas.l10n = JSON.parse @manifestLoader.defaults.l10n
-		else
-			@datas.l10n = @manifestLoader.defaults.l10n
-
+		@datas.l10n = @manifestLoader.defaults.l10n
 		@datas.l10n.GLOBAL = {
 			baseURL: baseURL
 			basePath: basePath
 			locale: locale
 		}
-
 		@manifestLoader.addData @datas.l10n
 		@manifestLoader.addCachedTemplates(defaultTemplates)
 		@onModulesRoutesLoaded(@manifestLoader.defaults)
 
 	onModulesRoutesLoaded: (data) =>
 		@datas.modulesRoutes = data.modulesRoutes
-		@datas.modulesRoutes = $.parseJSON data.modulesRoutes if typeof data.modulesRoutes == "string"
-			
 		ModulesManager.setModulesRoutesData @datas.modulesRoutes
 		@initModulesDefault()
-
 		@initRouter()
 		@connectSwitcherToRouter()
 		@start()

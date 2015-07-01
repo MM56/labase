@@ -26,7 +26,7 @@ class BaseModule extends AbstractModule
 		if batchId == @id
 			console.log '%c BaseModule - onPreloadTplComplete ', 'background: #555; color: #fff', @
 			@addTemplate @$parentWrapper, tpl, app.datas.l10n
-			Transition.fadeOut @$elt[0]
+			Transition.fadeOut @$elt
 			@registerDOM()
 
 	addTemplate: ($elt, tpl, data) =>
@@ -45,7 +45,7 @@ class BaseModule extends AbstractModule
 	show: =>
 		#console.log "********** show", @
 		@onShowStart()
-		Transition.fadeIn @$elt[0], @onShowEnd
+		Transition.fadeIn @$elt, @onShowEnd
 
 	onShowStart: =>
 		super()
@@ -55,7 +55,7 @@ class BaseModule extends AbstractModule
 	hide: =>
 		#console.log "********** hide", @
 		@onHideStart()
-		Transition.fadeOut @$elt[0], @onHideEnd
+		Transition.fadeOut @$elt, @onHideEnd
 
 	onHideStart: =>
 		super()

@@ -78,9 +78,7 @@ class Router
 		if matchedRoutes.length > 0
 			@routeMatched.dispatch matchedRoutes
 		else
-			console.error "No routes matched. Force redirect /"
-			@navigate "/"
-
+			console.error "No routes matched."
 	addRoutes: (@routes) =>
 		for route in @routes
 			localizedRoute = @localizeRoute(route)

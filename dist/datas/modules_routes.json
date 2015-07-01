@@ -2,25 +2,25 @@
 	"modules": [
 		{
 			"id": "a",
-			"routes": ["/a"],
+			"routes": ["/a", "/", "/mobile/a", "/mobile"],
 			"modules": [
 				{
 					"id": "e",
-					"routes": ["/e"]
+					"routes": ["/e","/mobile/e"]
 				},
 				{
 					"id": "f",
-					"routes": ["/f"]
+					"routes": ["/f","/mobile/f"]
 				}
 			]
 		},
 		{
 			"id": "b",
-			"routes": ["/b"],
+			"routes": ["/b","/mobile/b"],
 			"modules": [
 				{
 					"id": "d",
-					"routes": ["/d"]
+					"routes": ["/d","/mobile/d"]
 				}
 			]
 		}
