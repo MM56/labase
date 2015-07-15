@@ -39,6 +39,8 @@ class Router
 			currentRoute = @currentHash
 		else
 			currentRoute = window.location.pathname
+			if currentRoute.indexOf(basePath) == 0
+				currentRoute = currentRoute.substr basePath.length
 
 		currentRoute = StringUtils.removeLeadingSlash(currentRoute)
 
@@ -54,7 +56,12 @@ class Router
 		currentRoute = StringUtils.removeTrailingSlash(currentRoute)
 		currentRoute += "/"
 
-		@replaceState(currentRoute)
+
+		# case when subfolders
+		realRoute = StringUtils.removeLeadingSlash(currentRoute)
+		realRoute = basePath + realRoute
+
+		@replaceState(realRoute)
 
 		if @previousRoute?
 			if @previousRoute == currentRoute
