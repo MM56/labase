@@ -19,7 +19,7 @@ class ModulesSwitcher
 	constructor: () ->
 		@id = ModulesSwitcher.instances.length
 		ModulesSwitcher.instances.push @
-		@nextModuleReady = new signals.Signal()
+		@nextModuleReady = new MM.Signal()
 		@isSwitching = false
 
 	reset: =>

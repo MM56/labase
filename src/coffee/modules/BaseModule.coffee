@@ -4,7 +4,7 @@ class BaseModule extends AbstractModule
 
 	constructor: (parentWrapper, @params, @defaultBatches, @id) ->
 		super(parentWrapper, @params, @defaultBatches, @id)
-		@preloadReady = new signals.Signal()
+		@preloadReady = new MM.Signal()
 
 	preload: =>
 		@preloadReady.addOnce @onPreloadReady

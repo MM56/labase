@@ -14,11 +14,11 @@ class ManifestLoader
 		@defaults = {}
 		@cacheIds = []
 
-		@complete = new signals.Signal()
-		@tplComplete = new signals.Signal()
-		@progress = new signals.Signal()
-		@start = new signals.Signal()
-		@hideLoader = new signals.Signal()
+		@complete = new MM.Signal()
+		@tplComplete = new MM.Signal()
+		@progress = new MM.Signal()
+		@start = new MM.Signal()
+		@hideLoader = new MM.Signal()
 
 	reset:(files) =>
 		nbFilesCached = 0

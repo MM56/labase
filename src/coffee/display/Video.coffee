@@ -23,14 +23,14 @@ class Video
 		@elt = @$elt[0]
 		@available = true
 
-		@onVideoPaused = new signals.Signal()
-		@onVideoLoaded = new signals.Signal()
-		@onVideoEnded = new signals.Signal()
-		@onVideoTimeUpdated = new signals.Signal()
-		@onVideoProgressed = new signals.Signal()
-		@onVideoSeeked = new signals.Signal()
-		@onVideoWaited = new signals.Signal()
-		@onVideoFullScreen = new signals.Signal()
+		@onVideoPaused = new MM.Signal()
+		@onVideoLoaded = new MM.Signal()
+		@onVideoEnded = new MM.Signal()
+		@onVideoTimeUpdated = new MM.Signal()
+		@onVideoProgressed = new MM.Signal()
+		@onVideoSeeked = new MM.Signal()
+		@onVideoWaited = new MM.Signal()
+		@onVideoFullScreen = new MM.Signal()
 
 	init: () =>
 		@unbind()

@@ -58,7 +58,7 @@ class App
 	start: () =>
 		@router.parse()
 
-	# 	@testRouteListener = new signals.Signal()
+	# 	@testRouteListener = new MM.Signal()
 	# 	@testRouteListener.add @onRouteTriggered
 	# 	ModulesManager.addListener "page", @testRouteListener
 

@@ -21,14 +21,14 @@ class AbstractModule
 
 		@showed = false
 
-		@preloadComplete = new signals.Signal()
-		@showStart = new signals.Signal()
-		@showEnd = new signals.Signal()
-		@hideStart = new signals.Signal()
-		@hideEnd = new signals.Signal()
-		@onEnterEnd = new signals.Signal()
-		@onExitEnd = new signals.Signal()
-		@onDestroy = new signals.Signal()
+		@preloadComplete = new MM.Signal()
+		@showStart = new MM.Signal()
+		@showEnd = new MM.Signal()
+		@hideStart = new MM.Signal()
+		@hideEnd = new MM.Signal()
+		@onEnterEnd = new MM.Signal()
+		@onExitEnd = new MM.Signal()
+		@onDestroy = new MM.Signal()
 
 		@submodules = []
 

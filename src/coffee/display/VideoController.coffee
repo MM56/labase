@@ -13,8 +13,8 @@ class VideoController
 		for key, value of @options
 			@options[key] = if options?[key]? then options[key] else value
 
-		@onVideoLoaded = new signals.Signal()
-		@onVideoSwitched = new signals.Signal()
+		@onVideoLoaded = new MM.Signal()
+		@onVideoSwitched = new MM.Signal()
 
 		@videoObjects = []
 		@createVideosObjects()

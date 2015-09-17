@@ -12,8 +12,8 @@ class Router
 	previousHash: null
 
 	constructor: (@locale, @l10n, @noLocaleInRoute) ->
-		@onSameRoute = new signals.Signal()
-		@routeMatched = new signals.Signal()
+		@onSameRoute = new MM.Signal()
+		@routeMatched = new MM.Signal()
 		@regexps = []
 
 		window.addEventListener "popstate", @onPopState

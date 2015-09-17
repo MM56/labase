@@ -3,7 +3,7 @@ class MainLoader
 	$elt : null
 
 	constructor: ->
-		@destroy = new signals.Signal()
+		@destroy = new MM.Signal()
 		window.app = new App()
 		@registerDOM()
 

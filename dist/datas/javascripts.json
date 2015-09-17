@@ -10,7 +10,7 @@
 			"vendor/createjs/soundjs-0.6.1.min.js",
 			"vendor/rAF.js",
 			{"file": "vendor/fastclick.js", "builds": ["mobile"]},
-			"vendor/signals.min.js",
+			"vendor/mm56/Signal.js",
 			"vendor/stats.min.js",
 			"vendor/pathToRegexp.min.js",
 			"vendor/mm56/css.js",
