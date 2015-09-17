@@ -7,8 +7,7 @@ class ModulesSwitcher
 	nextModule: null
 	previousModule: null
 
-	nextModuleEnterEnd: null
-	nextModuleEnterStart: null
+	nextModuleReady: null
 
 	@instances: []
 
@@ -20,9 +19,15 @@ class ModulesSwitcher
 	constructor: () ->
 		@id = ModulesSwitcher.instances.length
 		ModulesSwitcher.instances.push @
-		@nextModuleEnterStart = new signals.Signal()
-		@nextModuleEnterEnd = new signals.Signal()
+		@nextModuleReady = new signals.Signal()
 		@isSwitching = false
+
+	reset: =>
+		@isSwitching = false
+		@unbind @previousModule
+		@unbind @nextModule
+		@previousModule = null
+		@nextModule = null
 
 	exit: =>
 		if @previousModule?
@@ -55,27 +60,31 @@ class ModulesSwitcher
 			throw newModule + " class doesn't exist"
 
 		if @isSwitching
-			if @previousModule?
-				@unbind @previousModule
-				@previousModule.exit()
+			@unbind @previousModule
+			@previousModule.exit() if @previousModule?
 			@previousModule = @nextModule
-			@previousModule.unbindLoad()
+			@previousModule.unbindLoad() if @previousModule?
+
 		@isSwitching = true
 		@nextModule = new ModuleClass(parentModuleWrapper, params, defaultBatches, moduleId)
 		@nextModule.preloadComplete.addOnce @onNextModulePreloadComplete
 		@nextModule.preload()
 
 	onNextModulePreloadComplete: (timingType) =>
+		@nextTiming = timingType
+
 		@nextModule.preloadComplete.remove @onNextModulePreloadComplete
 
-		switch timingType
+		@nextModuleReady.dispatch(@nextModule)
 
+	doSwitch: =>
+		# Logger.log "doSwitch", @previousModule, @nextModule
+		timingType = @nextTiming
+		switch timingType
 			when ModulesSwitcher.ENTER_BEFORE_EXIT
 				@onEnterBeforeExit()
-
 			when ModulesSwitcher.SIMULTANEOUS
 				@onSimultaneous()
-
 			else
 				@onExitBeforeEnter()
 
@@ -92,35 +101,26 @@ class ModulesSwitcher
 		@nextModule.onEnterEnd.addOnce @onNextModuleEnterEndAfterPreviousExitEnd
 		@previousModule = @nextModule
 		@nextModule.enter()
-		@nextModuleEnterStart.dispatch(@nextModule)
 
 	onNextModuleEnterEndAfterPreviousExitEnd: =>
 		@nextModule.onEnterEnd.remove @onNextModuleEnterEndAfterPreviousExitEnd
-		@nextModuleEnterEnd.dispatch(@nextModule)
 		@isSwitching = false
 
 	onEnterBeforeExit: =>
 		@nextModule.onEnterEnd.addOnce @onNextModuleEnterEnd
 		@nextModule.enter()
-		@nextModuleEnterStart.dispatch(@nextModule)
 
 	onNextModuleEnterEnd: =>
 		@nextModule.onEnterEnd.remove @onNextModuleEnterEnd
-		if @previousModule?
-			@previousModule.exit()
-
+		@previousModule.exit() if @previousModule?
 		@previousModule = @nextModule
 		@isSwitching = false
-		@nextModuleEnterEnd.dispatch(@nextModule)
 
 	onSimultaneous: =>
-		if @previousModule?
-			@previousModule.exit()
+		@previousModule.exit() if @previousModule?
 		@nextModule.onEnterEnd.addOnce @onNextModuleEnterEndAfterSimultaneous
 		@nextModule.enter()
 		@previousModule = @nextModule
-		@nextModuleEnterStart.dispatch(@nextModule)
 
 	onNextModuleEnterEndAfterSimultaneous: =>
 		@nextModule.onEnterEnd.remove @onNextModuleEnterEndAfterSimultaneous
-		@nextModuleEnterEnd.dispatch(@nextModule)

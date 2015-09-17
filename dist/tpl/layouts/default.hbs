@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html class="{{detect.device}} {{detect.os}} {{detect.browser}} {{GLOBAL.locale}} no-js" lang="{{GLOBAL.locale}}">
 <head>
-	<title>{{header.title}}</title>
+	<title>{{l10n.header.title}}</title>
 	<meta charset="utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<meta http-equiv="cleartype" content="on" />
 	<meta http-equiv="expires" content="0" />
-	<meta name="description" content="{{header.description}}" />
+	<meta name="description" content="{{l10n.header.description}}" />
 	<meta name="robots" content="index, follow" />
 	<meta name="revisit-after" content="3 days" />
 	<meta name="audience" content="all" />
@@ -17,28 +17,28 @@
 	<meta name='HandheldFriendly' content='true' />
 	<meta name='format-detection' content='telephone=no' />
 	<meta name="msapplication-tap-highlight" content="no">
-	<meta name="apple-mobile-web-app-title" content="{{header.title}}" />
+	<meta name="apple-mobile-web-app-title" content="{{l10n.header.title}}" />
 	<meta name="apple-mobile-web-app-capable" content="no" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no{{^GLOBAL.isDesktop}},minimal-ui{{/GLOBAL.isDesktop}}" />
 	<!-- FB OPENGRAPH -->
 	<meta property="og:type" content="website" />
-	<meta property="og:title" content="{{header.sharefb}}" />
+	<meta property="og:title" content="{{l10n.header.sharefb}}" />
 	<meta property="og:description" content="&#8291;" />
-	<meta property="og:site_name" content="{{header.title}}" />
+	<meta property="og:site_name" content="{{l10n.header.title}}" />
 	<meta property="og:image" content="{{GLOBAL.baseURL}}" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
 	<meta property="og:url" content="{{GLOBAL.baseURL}}" />
 	<!-- TWITTER CARD -->
 	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:title" content="{{header.title}}" />
-	<meta name="twitter:site" content="{{header.title}}" />
+	<meta name="twitter:title" content="{{l10n.header.title}}" />
+	<meta name="twitter:site" content="{{l10n.header.title}}" />
 	<meta name="twitter:image" content="{{GLOBAL.baseURL}}" />
 	<meta name="twitter:url" content="{{GLOBAL.baseURL}}" />
 	<!-- GOOGLE PLUS -->
-	<meta itemprop="name" content="{{header.title}}" />
-	<meta itemprop="description" content="{{header.description}}" />
+	<meta itemprop="name" content="{{l10n.header.title}}" />
+	<meta itemprop="description" content="{{l10n.header.description}}" />
 	<!-- LINKS -->
 	<link type="text/plain" rel="author" href="/humans.txt" />
 	<link rel="shortcut icon" href="/favicon.ico" />
@@ -61,7 +61,7 @@
 		{{/GLOBAL.defaultTemplates}}
 		{{/if}}
 	};
-	var l10nJSON = {{{l10n}}};
+	var l10nJSON = {{{l10n_encoded}}};
 	var manifestJSON = {{{manifest}}};
 	var routesJSON = {{{routes}}};
 	var noLocaleInRoute = {{GLOBAL.noLocaleInRoute}};

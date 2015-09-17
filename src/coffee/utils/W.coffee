@@ -29,10 +29,10 @@ class W
 
 		@onResize()
 		@bind()
-		
+
 	@bind: =>
 		@window.on "resize", @onResize
-		@body.on Events.CLICK, "a[rel='internal']", (event) ->
+		@body.on MouseEvent.CLICK, "a[rel='internal']", (event) ->
 			event.preventDefault()
 			event.stopPropagation()
 			$this = $(this)
@@ -41,10 +41,10 @@ class W
 
 		if @isTablet
 			@document.bind "visibilitychange", @onResize
-			@document.bind "touchstart", @onTouchStart
+			@document.bind MouseEvent.MOUSE_OVER, @onTouchStart
 
 		if @isPhone
-			@document.bind "touchmove", @onTouchMove
+			@document.bind MouseEvent.MOUSE_MOVE, @onTouchMove
 
 	@add: (el) =>
 		@_els.push el

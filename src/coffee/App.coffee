@@ -10,20 +10,20 @@ class App
 		@pixelRatio = window.devicePixelRatio || 1
 		@pixelRatio = 2 if window.devicePixelRatio > 2
 		@pixelRatio += "x"
-		
+
 		W.init()
 		@manifestLoader = new ManifestLoader(basePath, { "pixelRatio" : @pixelRatio })
 		@manifestLoader.isPhone = W.isPhone
 		@manifestLoader.isTablet = W.isTablet
 		@manifestLoader.isDesktop = W.isDesktop
 		@manifestLoader.isWebp = W.isWebp
-		
+
 		rAFManager.init()
 
 		if W.html.hasClass "csstransforms3d"
 			FunctionStats.init()
 
-	init: ->
+	init: =>
 		@datas = {}
 		@loadConfig()
 
@@ -31,11 +31,14 @@ class App
 		@manifestLoader.defaults["modulesRoutes"] = routesJSON
 		@manifestLoader.defaults["l10n"] = l10nJSON
 		@manifestLoader.defaults["manifest"] = manifestJSON
-		@onConfigLoaded()
+
+		@manifestLoader.complete.add @onConfigLoaded
+		@manifestLoader.load "defaultDesktop"
 
 	onConfigLoaded: () =>
+		@manifestLoader.complete.remove @onConfigLoaded
 		@datas.l10n = @manifestLoader.defaults.l10n
-		@datas.l10n.GLOBAL = {
+		@datas.GLOBAL = {
 			baseURL: baseURL
 			basePath: basePath
 			locale: locale

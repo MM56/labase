@@ -83,6 +83,7 @@ class App {
 			"partials_loader" => $partialsLoader
 		));
 		$tplRenderer->addHelper("render", new Handlebars\Helper\RenderHelper());
+		$tplRenderer->addHelper("IfEqual", new Handlebars\Helper\IfEqualHelper());
 		return $tplRenderer->render($this->config["defaultLayoutName"], $this->content);
 	}
 
@@ -336,7 +337,8 @@ class App {
 		// datas for template engine
 		$this->content = array_merge(array(
 			"env" => $this->config["env"],
-			"l10n" => json_encode($this->l10n),
+			"l10n" => $this->l10n,
+			"l10n_encoded" => json_encode($this->l10n),
 			"manifest" => $this->manifest,
 			"routes" => $this->modulesRoutes,
 			"detect" => $detect,

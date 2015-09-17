@@ -6,10 +6,17 @@ module.exports = (grunt) ->
 
 		buildPath = options.buildPath
 		datasPath = buildPath + "/datas"
+
 		javascriptsPath = datasPath + "/javascripts.json"
-		javascriptsData = grunt.file.readJSON(javascriptsPath)
+		hasJSData = grunt.file.exists(javascriptsPath)
+		if hasJSData
+			javascriptsData = grunt.file.readJSON(javascriptsPath)
+
 		manifestPath = options.srcPath + "/datas/manifest.json"
-		manifestData = grunt.file.readJSON(manifestPath)
+		hasManifestData = grunt.file.exists(manifestPath)
+		if hasManifestData
+			manifestData = grunt.file.readJSON(manifestPath)
+
 		modulesRoutesPath = datasPath + "/modules_routes.json"
 		modulesRoutesData = grunt.file.readJSON(modulesRoutesPath)
 		tplPath = buildPath + "/tpl"
@@ -41,9 +48,10 @@ module.exports = (grunt) ->
 
 				# add batch in manifest.json
 				found = false
-				for batch in manifestData
-					if batch.id == moduleId
-						found = true
+				if hasManifestData
+					for batch in manifestData
+						if batch.id == moduleId
+							found = true
 				if !found
 					manifestData.push {id: moduleId, files: [{id: "tpl", src: "tpl/partials/" + moduleTplPattern + ".hbs"}]}
 
@@ -53,9 +61,12 @@ module.exports = (grunt) ->
 
 				# add JS in javascripts.json
 				moduleSrc = modulePath + "/" + moduleIdCamelCase
-				if javascriptsData.files.src.indexOf(moduleSrc) == -1
-					appIndex = javascriptsData.files.src.indexOf("App")
-					javascriptsData.files.src.splice appIndex, 0, moduleSrc
+				if hasJSData
+					if javascriptsData.files.src.indexOf(moduleSrc) == -1
+						appIndex = javascriptsData.files.src.indexOf("App")
+						javascriptsData.files.src.splice appIndex, 0, moduleSrc
+				else
+					console.log "js/" + moduleSrc + ".js"
 
 				# add coffee
 				moduleCoffeePath = baseCoffeePath + "/" + moduleIdCamelCase
@@ -68,7 +79,9 @@ module.exports = (grunt) ->
 
 		processModules modulesRoutesData.modules
 
-		grunt.file.write javascriptsPath, JSON.stringify(javascriptsData, null, '\t')
-		grunt.file.write manifestPath, JSON.stringify(manifestData, null, '\t')
+		if hasJSData
+			grunt.file.write javascriptsPath, JSON.stringify(javascriptsData, null, '\t')
+		if hasManifestData
+			grunt.file.write manifestPath, JSON.stringify(manifestData, null, '\t')
 
 	return {}

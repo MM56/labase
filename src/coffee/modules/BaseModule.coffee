@@ -25,7 +25,7 @@ class BaseModule extends AbstractModule
 	onPreloadTplComplete: (tpl, batchId) =>
 		if batchId == @id
 			console.log '%c BaseModule - onPreloadTplComplete ', 'background: #555; color: #fff', @
-			@addTemplate @$parentWrapper, tpl, app.datas.l10n
+			@addTemplate @$parentWrapper, tpl, app.datas
 			Transition.fadeOut @$elt
 			@registerDOM()
 

@@ -37,22 +37,6 @@
 	@if $imgName != null { background: url(#{$imgPath}#{$imgName}) 0px 0px no-repeat; }
 }
 
-@mixin bgCover {
-	-webkit-background-size: cover !important;
-	-ms-background-size: cover !important;
-	-moz-background-size: cover !important;
-	-o-background-size: cover !important;
-	background-size: cover !important;
-}
-
-@mixin bgContain {
-	-webkit-background-size: contain !important;
-	-ms-background-size: contain !important;
-	-moz-background-size: contain !important;
-	-o-background-size: contain !important;
-	background-size: contain !important;
-}
-
 .inliner {
     height: 100%;
 }

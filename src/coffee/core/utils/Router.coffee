@@ -9,6 +9,7 @@ class Router
 	noLocaleInRoute: false
 	onSameRoute: null
 	previousRoute: null
+	previousHash: null
 
 	constructor: (@locale, @l10n, @noLocaleInRoute) ->
 		@onSameRoute = new signals.Signal()
@@ -22,17 +23,19 @@ class Router
 		@navigate(event.state)
 
 	navigate: (hash, @extra) =>
+		@previousHash = @currentHash
 		@currentHash = hash
 		@parse()
 
 	replaceState: (hash) =>
-		if window.history.pushState
-			if @previousRoute == hash
-				window.history.replaceState(hash, null, hash)
+		if !@extra? || (@extra.silent? && !@extra.silent)
+			if window.history.pushState
+				if @previousRoute == hash
+					window.history.replaceState(hash, null, hash)
+				else
+					window.history.pushState(hash, null, hash)
 			else
-				window.history.pushState(hash, null, hash)
-		else
-			console.error "Not supporting window.history.pushState"
+				console.error "Not supporting window.history.pushState"
 
 	parse: =>
 		if @currentHash?
@@ -52,7 +55,7 @@ class Router
 			currentRoute = "/" + @locale + "/" + currentRoute
 		else
 			currentRoute =  "/" + currentRoute
-		
+
 		currentRoute = StringUtils.removeTrailingSlash(currentRoute)
 		currentRoute += "/"
 
@@ -67,7 +70,7 @@ class Router
 			if @previousRoute == currentRoute
 				@onSameRoute.dispatch()
 				return
-		
+
 		@previousRoute = currentRoute
 
 		console.log '%c Router ', 'background: #555; color: #fff', currentRoute

@@ -40,14 +40,16 @@ class ModulesManager
 
 		modulesRoutes = @cloneModulesRoutes()
 
+		# required when switching from submodule to n-1 level
+		@cleanSwitchers()
+
 		# routesObjects should not be > 1 (can't guarantee the result)
 		# lastSwitchers is the array of switchers needed for previous tree
 		# lastSwitchersTmp is the array of switchers for wanted tree
 		@lastSwitchers = @lastSwitchersTmp.slice()
 		@lastSwitchersTmp = []
-		
+
 		for routeObject in routesObjects
-			switcher = getSwitcherByRoute routeObject.route, modulesRoutes
 			module = getModuleByRoute routeObject.route, modulesRoutes
 
 			# if we're going to a parent route -> exit submodules
@@ -81,7 +83,7 @@ class ModulesManager
 				cleanedSwitchers = []
 				for s in switchers
 					cleanedSwitchers.push s if cleanedSwitchers.indexOf(s) == -1
-			
+
 				for s in cleanedSwitchers
 					@lastSwitchersTmp.push s if @lastSwitchersTmp.indexOf(s) == -1
 
@@ -99,7 +101,7 @@ class ModulesManager
 
 				modulesIds = []
 				modulesIds.push(module.id) for module in modules
-				
+
 				# get modules definitions
 				modulesDefinitions = getModulesDefinitionsByIds modulesIds
 				batchesIds = []
@@ -107,9 +109,18 @@ class ModulesManager
 					batchesIds = batchesIds.concat window[moduleDefinition.module].getBatches(moduleDefinition.id)
 
 				# 5) when top module enter end, switch descending modules
-				cascadeSwitch topModule, batchesIds, routeObject, clonedModule, true, switcher
+				cascadeSwitch topModule, batchesIds, routeObject, clonedModule, true, topModule.switcher
 			else
 				throw "No module definition found for " + module.id
+
+	@cleanSwitchers: =>
+		switchersToClean = []
+		for switcher in @lastSwitchers
+			if @lastSwitchersTmp.indexOf(switcher) == -1
+				switchersToClean.push switcher
+
+		for switcher in switchersToClean
+			switcher.reset()
 
 	moduleIsAParent = (module, previousModule) =>
 		if !previousModule?
@@ -148,21 +159,29 @@ class ModulesManager
 						routeObject: routeObject
 						isFirst: isFirst
 						module: moduleParent
-					module.switcher.nextModuleEnterStart.addOnce onNextModuleEnterStart, ctx
+						lastSwitchers: @lastSwitchers
+						lastSwitchersTmp: @lastSwitchersTmp
+						directSwitcher: directSwitcher
+					module.switcher.nextModuleReady.addOnce onNextModuleReady, ctx
 					module.switcher.switch moduleDefinition.module, params, m.parentWrapperName, batchesIds, moduleDefinition.id
 
-	onNextModuleEnterStart = (moduleInstance) ->
+	onNextModuleReady = (moduleInstance) ->
 		m = @m
 		module = @module
 
 		# add submodules to parent module
 		if module.parent?
-			m.parent.switcher.nextModule.addSubmodule moduleInstance 
+			m.parent.switcher.nextModule.addSubmodule moduleInstance
 
-		if m.modules?
+		if m.modules? && m.modules.length > 0
 			# if there are submodules in tree, keep switching modules
 			for submodule in m.modules
-				cascadeSwitch submodule, @batchesIds, @routeObject, @requestedModule, @isFirst
+				cascadeSwitch submodule, @batchesIds, @routeObject, @requestedModule, @isFirst, @directSwitcher
+		else
+			# console.log @lastSwitchersTmp.reverse(), @lastSwitchers, @directSwitcher
+			for switcher in @lastSwitchersTmp.reverse()
+				if @lastSwitchers.indexOf(switcher) == -1 || switcher == @directSwitcher
+					switcher.doSwitch()
 
 	getSwitchersToRoot = (m) =>
 		switchers = []
@@ -250,20 +269,6 @@ class ModulesManager
 			if id == moduleDefinition.id
 				return moduleDefinition
 		return null
-
-	getSwitcherByRoute = (route, data) =>
-		for modulesRoutes in data.modules
-			if modulesRoutes.routes?
-				if typeof modulesRoutes.routes == "string"
-					if modulesRoutes.routes == route
-						return data.switcher
-				else if modulesRoutes.routes instanceof Array
-					if modulesRoutes.routes.indexOf(route) > -1
-						return data.switcher
-
-			if modulesRoutes.modules?
-				switcher = getSwitcherByRoute(route, modulesRoutes)
-				return switcher if switcher?
 
 	getModuleByRoute = (route, data) =>
 		for modulesRoutes in data.modules

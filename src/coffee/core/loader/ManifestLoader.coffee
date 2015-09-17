@@ -3,7 +3,7 @@ class ManifestLoader
 	cache: null
 	cacheIds: null
 	defaults: null
-	
+
 	separator = "."
 	loader = null
 	nbFilesCached = 0
@@ -19,7 +19,7 @@ class ManifestLoader
 		@progress = new signals.Signal()
 		@start = new signals.Signal()
 		@hideLoader = new signals.Signal()
-		
+
 	reset:(files) =>
 		nbFilesCached = 0
 		nbFiles = files.length
@@ -47,6 +47,8 @@ class ManifestLoader
 				obj.type = file.type if file.type?
 				filesToLoad.push obj
 
+		@start.dispatch()
+
 		if nbFilesCached == nbFiles
 			@onFilesLoaded()
 		else
@@ -56,7 +58,6 @@ class ManifestLoader
 			loader.addEventListener "fileload", @onFileLoaded
 			loader.addEventListener "progress", @onProgress
 			loader.addEventListener "complete", @onFilesLoaded
-			@start.dispatch()
 
 			for file in filesToLoad
 				loader.loadFile file
@@ -96,7 +97,7 @@ class ManifestLoader
 
 	getFilesToLoad : (ids) =>
 		files = []
-		modulesIds = ids 
+		modulesIds = ids
 		modulesIds = [ids] if typeof ids == "string"
 		idsFound = 0
 
@@ -122,7 +123,7 @@ class ManifestLoader
 								files.push {id: fileId, src: src, infos: {batchId: manifest.id, fileId: file.id + i, data: file}}
 						else
 							src = @getFileSrc(file, @data)
-							
+
 							obj = {id: manifest.id + separator + file.id, src: src, infos: {batchId: manifest.id, fileId: file.id, data: file}}
 							obj.type = "binary" if file.id.indexOf("packFile") != -1
 							if ((file.id.indexOf("packFile") != -1) || (file.id.indexOf("packConf") != -1))

@@ -16,7 +16,8 @@
 			"vendor/mm56/css.js",
 			"vendor/console.snapshot.js",
 			"vendor/mm56/log.js",
-			"vendor/Magipack.js"
+			"vendor/Magipack.js",
+			"vendor/bodymovin.min.js"
 		],
 		"src": [
 			"core/loader/ManifestLoader",
@@ -31,7 +32,7 @@
 			"utils/FunctionStats",
 			"utils/W",
 			"utils/rAFManager",
-			"utils/Events",
+			"utils/MouseEvent",
 			"modules/BaseModule",
 			"modules/LoaderModule",
 			"modules/PageModule",

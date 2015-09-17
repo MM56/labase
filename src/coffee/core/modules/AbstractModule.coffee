@@ -3,6 +3,7 @@ class AbstractModule
 	$elt: null
 	preloadComplete: null
 	showStart: null
+	showed : null
 	showEnd: null
 	hideStart: null
 	hideEnd: null
@@ -12,12 +13,13 @@ class AbstractModule
 	$parentWrapper: null
 	defaultBatches: null
 	submodules: null
-	submodulesExited: 0
 
 	constructor: (parentWrapper, @params, @defaultBatches, @id) ->
 		# console.log @
 		parentWrapper = "root-module-wrapper" if !parentWrapper?
 		@$parentWrapper = $("." + parentWrapper)
+
+		@showed = false
 
 		@preloadComplete = new signals.Signal()
 		@showStart = new signals.Signal()
@@ -48,23 +50,20 @@ class AbstractModule
 		@submodules.splice @submodules.indexOf(@submodule), 1
 
 	exit: (cascade = true) =>
+		return if !@showed
 		if cascade? && cascade && @submodules.length > 0
-			@submodulesExited = 0
-			for submodule in @submodules
-				submodule.onExitEnd.addOnce @onSubmoduleExitEnd
-				submodule.exit()
+			for submodule in @submodules.slice(0).reverse()
+				submodule.exit() if submodule.showed
+			@hide()
 		else
 			@hide()
 
-	onSubmoduleExitEnd: =>
-		@submodulesExited++
-		if @submodulesExited >= @submodules.length
-			@hide()
 	show: =>
 		@onShowStart()
 		@onShowEnd()
 
 	onShowStart: =>
+		@showed = true
 		console.log '%c AbstractModule - onShowStart ', 'background: #555; color: #fff', @
 		@showStart.dispatch @
 
@@ -84,6 +83,7 @@ class AbstractModule
 
 	onHideEnd: =>
 		console.log '%c AbstractModule - onHideEnd ', 'background: #555; color: #fff', @
+		@showed = false
 		@hideEnd.dispatch @
 		@exitEnd()
 
