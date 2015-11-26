@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html class="{{detect.device}} {{detect.os}} {{detect.browser}} {{GLOBAL.locale}} no-js" lang="{{GLOBAL.locale}}">
+	<head>
+		<title>{{l10n.SHARE.share.title}}</title>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta http-equiv="cleartype" content="on" />
+		<meta http-equiv="expires" content="0" />
+		<meta name="description" content="{{l10n.SHARE.share.global.fb}}" />
+		<meta name="robots" content="index, follow" />
+		<meta name="revisit-after" content="3 days" />
+		<meta name="audience" content="all" />
+		<meta name="author" content="Mondelēz International" />
+		<meta name="copyright" content="Mondelēz International" />
+		<meta name="publisher" content="Mondelēz International" />
+		<!-- MOBILE -->
+		<meta name='HandheldFriendly' content='true' />
+		<meta name='format-detection' content='telephone=no' />
+		<meta name="msapplication-tap-highlight" content="no">
+		<meta name="apple-mobile-web-app-title" content="{{l10n.SHARE.share.title}}" />
+		<meta name="apple-mobile-web-app-capable" content="no" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no{{^GLOBAL.isDesktop}},minimal-ui{{/GLOBAL.isDesktop}}" />
+		<!-- FB -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="{{l10n.SHARE.share.title}}" />
+		<meta property="og:description" content="{{l10n.SHARE.share.global.fb}}" />
+		<meta property="og:site_name" content="{{l10n.SHARE.share.title}}" />
+		<meta property="og:image" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}img/static/share/share_{{GLOBAL.locale}}.jpg" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:url" content="{{GLOBAL.shareURL}}" />
+		<!-- TWITTER -->
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:title" content="{{l10n.SHARE.share.title}}" />
+		<meta name="twitter:site" content="{{l10n.SHARE.share.title}}" />
+		<meta name="twitter:image" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}img/static/share/share_{{GLOBAL.locale}}.jpg" />
+		<meta name="twitter:url" content="{{GLOBAL.baseURL}}{{GLOBAL.locale}}" />
+		<!-- GOOGLE -->
+		<meta name="thumbnail" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}img/static/share/60x60.jpg" />
+		<meta itemprop="name" content="{{l10n.SHARE.share.title}}" />
+		<meta itemprop="description" content="{{l10n.SHARE.share.global.fb}}" />
+		<!-- LINKS and ICONS -->
+		<link type="text/plain" rel="author" href="/humans.txt" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<link rel="apple-touch-icon-precomposed" href="{{GLOBAL.assetsBaseURL}}{{GLOBAL.assetsPath}}img/static/apple-touch-icon-precomposed.png" />
+		<link rel="stylesheet" type="text/css" href="{{GLOBAL.assetsBaseURL}}{{GLOBAL.assetsPath}}css/style.{{#GLOBAL.isDesktop}}desktop{{/GLOBAL.isDesktop}}{{^GLOBAL.isDesktop}}mobile{{/GLOBAL.isDesktop}}.css" media="screen, projection" />
+		<script type="text/javascript">
+		var appDebug = "{{debugMode}}" != "";
+		var env = "{{env}}";
+		var baseURL = "{{GLOBAL.baseURL}}";
+		var currentURL = "{{GLOBAL.currentURL}}";
+		var basePath = "{{GLOBAL.basePath}}";
+		var assetsBaseURL = "{{GLOBAL.assetsBaseURL}}";
+		var assetsPath = "{{GLOBAL.assetsPath}}";
+		var mediasPath = "{{GLOBAL.assetsBaseURL}}{{GLOBAL.assetsPath}}medias/";
+		var locale = "{{GLOBAL.locale}}";
+		var defaultTemplates = {
+			{{#if GLOBAL.defaultTemplates}}
+			{{#GLOBAL.defaultTemplates}}
+				{{{.}}}
+			{{/GLOBAL.defaultTemplates}}
+			{{/if}}
+		};
+		var l10nJSON = {{{l10n_encoded}}};
+		var manifestJSON = {{{manifest}}};
+		var routesJSON = {{{routes}}};
+		var noLocaleInRoute = {{GLOBAL.noLocaleInRoute}};
+		var svg = {{{svg_encoded}}};
+		var apiURL = "{{apiURL}}";
+		</script>
+	</head>
+	<body>
+		<div id="root" class="root-module-wrapper">
+			{{> global/header }}
+			{{> loader/mainLoader }}
+			{{> loader/usualLoader }}
+			{{> modules}}
+			{{> notifier/orientation }}
+		</div>
+		{{>loader/worker}}
+		{{>global/javascripts}}
+	</body>
+</html>

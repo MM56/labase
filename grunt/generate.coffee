@@ -5,7 +5,7 @@ module.exports = (grunt) ->
 		options = grunt.option "globalConfig"
 
 		buildPath = options.buildPath
-		datasPath = buildPath + "/datas"
+		datasPath = buildPath + "/shared/datas"
 
 		javascriptsPath = datasPath + "/javascripts.json"
 		hasJSData = grunt.file.exists(javascriptsPath)
@@ -19,7 +19,7 @@ module.exports = (grunt) ->
 
 		modulesRoutesPath = datasPath + "/modules_routes.json"
 		modulesRoutesData = grunt.file.readJSON(modulesRoutesPath)
-		tplPath = buildPath + "/tpl"
+		tplPath = buildPath + "/shared/tpl"
 		partialsPath = tplPath + "/partials"
 
 		srcPath = options.srcPath
@@ -53,7 +53,7 @@ module.exports = (grunt) ->
 						if batch.id == moduleId
 							found = true
 				if !found
-					manifestData.push {id: moduleId, files: [{id: "tpl", src: "tpl/partials/" + moduleTplPattern + ".hbs"}]}
+					manifestData.push {id: moduleId, files: [{id: "tpl", src: partialsPath + "/" + moduleTplPattern + ".hbs"}]}
 
 				# add tpl
 				if !grunt.file.exists moduleTplPath + ".hbs"

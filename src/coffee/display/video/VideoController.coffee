@@ -1,8 +1,7 @@
 class VideoController
 
-	options: {
+	options:
 		nbVideosRequired: 1
-	}
 
 	$container: null
 	videoObjects: null
@@ -19,14 +18,14 @@ class VideoController
 		@videoObjects = []
 		@createVideosObjects()
 
-		#app.onSoundChanged.add @onSoundChanged
+		SoundManager.updated.add @onSoundChanged
 
 	# _____________________________
 	# METHODS
 
 	onSoundChanged: () =>
 		for vo in @videoObjects
-			vo.elt.muted = app.muted
+			vo.elt.muted = SoundManager.isMuted
 
 	createVideosObjects: () =>
 		if @$container.find(".video-controlled").length < @options.nbVideosRequired
@@ -39,14 +38,19 @@ class VideoController
 	getVideoInstance: (i) =>
 		return new Video(i)
 
-	play: (src) =>
+	play: (src, options = {}) =>
+
 		vo = @getAvailableVo()
+		console.log src, vo
+		vo.src = src
 		vo.available = false
+		vo.keepGoing = options.keepGoing || false
+		vo.onlyPreload = options.onlyPreload || false
+		vo.loop = options.loop || false
 		vo.setSource src
 		vo.init()
-		
-		vo.onVideoLoaded.add @onVideoCanPlay
 
+		vo.onVideoLoaded.add @onVideoCanPlay
 		return vo
 
 	getAvailableVo: () =>
@@ -59,15 +63,26 @@ class VideoController
 			@addVo newVo
 
 		if oldVo?
-			TweenMax.delayedCall 0, =>
-				@removeVo oldVo
+			setTimeout =>
+				@removeVo oldVo if oldVo != newVo && !oldVo.keepGoing
+			, 0
 		@onVideoSwitched.dispatch newVo
+		@lastVo = newVo
 
 	addVo: (vo) =>
 		vo.pause()
-		vo.elt.muted = false
+		vo.elt.muted = SoundManager.isMuted
 		vo.$elt.css "z-index", 2
 		vo.play()
+
+	searchBySrc: (src) =>
+		for vo in @videoObjects
+			if vo.src == src
+				return vo
+
+	removeVos: () =>
+		for vo in @videoObjects
+			@removeVo(vo)
 
 	removeVo: (vo) =>
 		vo.unbind()
@@ -77,13 +92,23 @@ class VideoController
 		vo.$elt.attr "src", null
 		vo.$elt.children().remove()
 		vo.available = true
+		vo.loop = false
+		delete vo.src if vo.src?
+		delete vo.onlyPreload if vo.onlyPreload?
+		delete vo.keepGoing if vo.keepGoing?
 
 	# _____________________________
 	# SIGNALS
-
+	
 	onVideoCanPlay: (vo) =>
 		@onVideoLoaded.dispatch(vo)
 		vo.onVideoLoaded.remove @onVideoCanPlay
+		
+		if vo.onlyPreload
+			vo.pause()
+			vo.seekTo 0
+			return
 		@switchVo vo, @lastVo
-		@lastVo = vo
+
+
 

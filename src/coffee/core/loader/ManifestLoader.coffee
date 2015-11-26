@@ -1,7 +1,5 @@
 class ManifestLoader
 
-	cache: null
-	cacheIds: null
 	defaults: null
 
 	separator = "."
@@ -9,10 +7,8 @@ class ManifestLoader
 	nbFilesCached = 0
 	nbFiles = 0
 
-	constructor: (@basePath = "/", @data)->
-		@cache = {}
+	constructor: (@basePath = "/", @datas)->
 		@defaults = {}
-		@cacheIds = []
 
 		@complete = new MM.Signal()
 		@tplComplete = new MM.Signal()
@@ -23,10 +19,6 @@ class ManifestLoader
 	reset:(files) =>
 		nbFilesCached = 0
 		nbFiles = files.length
-		if loader?
-			loader.removeAllEventListeners()
-			loader.reset()
-			loader.removeAll()
 
 	onProgress: (event) =>
 		@progress.dispatch(event)
@@ -39,8 +31,8 @@ class ManifestLoader
 
 		filesToLoad = []
 		for file in files
-			file.id =  TemplateRenderer.compile(file.id, @data)
-			if @cache[file.id]?
+			file.id =  TemplateRenderer.compile(file.id, @datas)
+			if Cache.get(file.id)
 				@onFileLoaded {item: {id: file.id}}
 			else
 				obj = {id: file.id, src: file.src, data: file.infos}
@@ -51,48 +43,43 @@ class ManifestLoader
 
 		if nbFilesCached == nbFiles
 			@onFilesLoaded()
-		else
-			loader = new createjs.LoadQueue(true)
-			loader.installPlugin(createjs.Sound)
-			createjs.Sound.alternateExtensions = ["mp3", "ogg"]
-			loader.addEventListener "fileload", @onFileLoaded
-			loader.addEventListener "progress", @onProgress
-			loader.addEventListener "complete", @onFilesLoaded
-
-			for file in filesToLoad
-				loader.loadFile file
+		
+		#only once
+		if !loader?
+			loader = new MM.Loader()
+			loader.onFileLoad = @onFileLoaded
+			loader.onProgress = @onProgress
+			loader.onComplete = @onFilesLoaded
+		loader.load(filesToLoad)
 
 	onFileLoaded: (event) =>
 		loaderItem = event.item
 		id = loaderItem.id
 		nbFilesCached++
 
-		if !@cache[id]?
-			@cache[id] = {item: loader.getResult id}
-			@cache[id].mapping = loaderItem.data.data.mapping if loaderItem.data?.data?.mapping?
+		if !Cache.get(id)
+			value = {item: loaderItem.result}
+			value.mapping = loaderItem.data.data.mapping if loaderItem.data?.data?.mapping?
+			Cache.set(id, value)
 			batchId = loaderItem.data.batchId
 			fileId = loaderItem.data.fileId
 			# if it's a pack, cache files mapped
-			if (fileId.indexOf("packConf") != -1 && @cache[batchId + separator + "packFile"]?) || (fileId.indexOf("packFile") != -1 && @cache[batchId + separator + "packConf"]?)
-				packConfCached = @cache[batchId + separator + "packConf"]
+			if (fileId.indexOf("packConf") != -1 && Cache.get(batchId + separator + "packFile")) || (fileId.indexOf("packFile") != -1 && Cache.get(batchId + separator + "packConf"))
+				packConfCached = Cache.get(batchId + separator + "packConf")
 				packConf = packConfCached.item
-				packFile = @cache[batchId + separator + "packFile"].item
+				packFile = Cache.get(batchId + separator + "packFile").item
 				mapping = packConfCached.mapping
 				mp = new Magipack(packFile, packConf)
 				for mappedObject in mapping
 					img = new Image()
 					img.src = mp.getURI(mappedObject.src)
-					@cache[batchId + separator + mappedObject.id] = {item: img}
-
+					Cache.set(batchId + separator + mappedObject.id, {item: img})
+					
 		tplSuffix = separator + "tpl"
 		if id.indexOf(tplSuffix) == id.length - tplSuffix.length
-			@tplComplete.dispatch(@cache[id].item.slice(0), id.substring(0, id.indexOf(tplSuffix)))
+			@tplComplete.dispatch(Cache.get(id).item.slice(0), id.substring(0, id.indexOf(tplSuffix)))
 
 	onFilesLoaded: () =>
-		if loader?
-			loader.removeEventListener "fileload", @onFileLoaded
-			loader.removeEventListener "progress", @onProgress
-			loader.removeEventListener "complete", @onFilesLoaded
 		@complete.dispatch()
 
 	getFilesToLoad : (ids) =>
@@ -118,43 +105,45 @@ class ManifestLoader
 							nbFiles = parseInt file.sequence, 10
 							for i in [0..nbFiles-1]
 								fileId = manifest.id + separator + file.id + i
-								data = $.extend({}, @data, {sequence: i})
+								data = $.extend({}, @datas, {sequence: i})
 								src = @getFileSrc(file, data)
 								files.push {id: fileId, src: src, infos: {batchId: manifest.id, fileId: file.id + i, data: file}}
 						else
-							src = @getFileSrc(file, @data)
-
+							src = @getFileSrc(file, @datas)
 							obj = {id: manifest.id + separator + file.id, src: src, infos: {batchId: manifest.id, fileId: file.id, data: file}}
 							obj.type = "binary" if file.id.indexOf("packFile") != -1
-							if ((file.id.indexOf("packFile") != -1) || (file.id.indexOf("packConf") != -1))
-								if manifest.support?
-									continue if (@isWebp && (file.id != "packFile.webp" && file.id != "packConf.webp"))
-									continue if (!@isWebp && (file.id != "packFile" && file.id != "packConf"))
-									obj.id = obj.id.replace('.webp','') if @isWebp
-
 							files.push obj
 
 		throw "Some batches were not found: " + modulesIds.toString() if idsFound != modulesIds.length
 		return files
 
-	getFileSrc: (file, data) =>
-		src = file.src
-		src = TemplateRenderer.compile(file.src, data) if data?
-
-		if file.basePath? && !file.basePath
-		else
-			src = @basePath + src
-			src = StringUtils.removeLeadingSlash(src)  if src.indexOf("http") != -1
-		return src
-
 	getFile: (batchId, fileId, clone = false) =>
-		item = @cache[batchId + separator + fileId].item
+		handles = Cache.getAll()
+		item = handles[batchId + separator + fileId].item
 		item = $(item).clone()[0] if clone
 		return item
 
 	addCachedTemplates: (templates) =>
 		for name, template of templates
-			@cache[name + separator + "tpl"] = {item: template}
+			Cache.set(name + separator + "tpl", {item: template})
+
+	getPrefix: () =>
+		prefix = baseURL
+		if (prefix.indexOf('http://') == -1 && prefix.indexOf('https://') == -1)
+			prefix = "http:" + prefix
+		return prefix
+
+	getFileSrc: (file, data) =>
+		src = file.src
+		src = TemplateRenderer.compile(file.src, data) if data?
+		if data.GLOBAL.assetsBaseURL? && data.GLOBAL.assetsPath?
+			prefix = @getPrefix()
+			switch file.id
+				when "packConf", "packFile"
+					src = prefix + data.GLOBAL.assetsPath + src
+				else
+					src = prefix + StringUtils.removeLeadingSlash(src)
+		return src
 
 	addData: (data) =>
 		@data = $.extend(@data, data)

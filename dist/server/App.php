@@ -4,6 +4,7 @@ require_once dirname(__FILE__) . '/Module.php';
 require_once dirname(__FILE__) . '/vendor/PathToRegexp.php';
 require_once dirname(__FILE__) . '/vendor/Mobile_Detect.php';
 require_once dirname(__FILE__) . '/vendor/Logger.php';
+require_once dirname(__FILE__) . '/vendor/geoplugin.class.php';
 
 class App {
 
@@ -21,6 +22,8 @@ class App {
 		"defaultLayoutName" => "default",
 		"compileTemplates" => false,
 		"env" => "dev",
+		"assetsPath" => "",
+		"assetsBaseURL" => "/",
 		"extraDatas" => array(),
 		"forceMobileRedirect" => "mobile"
 	);
@@ -31,6 +34,7 @@ class App {
 	protected $requestURI;
 	protected $noLocaleInRoute;
 	protected $forceLocaleRedirect;
+	protected $layout;
 
 
 	public function __construct(array $configOptions = array()) {
@@ -45,6 +49,7 @@ class App {
 				$this->config[$configOptionName] = $configOption;
 			}
 		}
+		$this->layout = $this->config["defaultLayoutName"];
 	}
 
 	public function render() {
@@ -84,7 +89,7 @@ class App {
 		));
 		$tplRenderer->addHelper("render", new Handlebars\Helper\RenderHelper());
 		$tplRenderer->addHelper("IfEqual", new Handlebars\Helper\IfEqualHelper());
-		return $tplRenderer->render($this->config["defaultLayoutName"], $this->content);
+		return $tplRenderer->render($this->layout, $this->content);
 	}
 
 	protected function init() {
@@ -116,8 +121,36 @@ class App {
 			}
 			$this->currentLocale = substr($escapedFragment, 0, 2);
 		} else {
-			$this->currentLocale = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
+			$geoplugin = new geoPlugin();
+			$ipaddress = '';
+			if (array_key_exists("HTTP_CLIENT_IP", $_SERVER)) {
+				$ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+			} else if (array_key_exists("HTTP_X_FORWARDED_FOR", $_SERVER)) {
+				$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			} else if (array_key_exists("HTTP_X_FORWARDED", $_SERVER)) {
+				$ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+			} else if (array_key_exists("HTTP_FORWARDED_FOR", $_SERVER)) {
+				$ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+			} else if (array_key_exists("HTTP_FORWARDED", $_SERVER)) {
+				$ipaddress = $_SERVER['HTTP_FORWARDED'];
+			} else if (array_key_exists("REMOTE_ADDR", $_SERVER)) {
+				$ipaddress = $_SERVER['REMOTE_ADDR'];
+			} else {
+				$ipaddress = null;
+			}
+			$geoplugin->locate($ipaddress);
+			$this->currentLocale = strtolower($geoplugin->countryCode);
 			$this->forceLocaleRedirect = true;
+
+			if(!in_array($this->currentLocale, $this->config["locales"])) {
+				if(array_key_exists("HTTP_ACCEPT_LANGUAGE", $_SERVER)) {
+					$this->currentLocale = substr($_SERVER["HTTP_ACCEPT_LANGUAGE"], 0, 2);
+					$this->forceLocaleRedirect = true;
+				} else {
+					$this->currentLocale = $this->config["locales"][0];
+				}
+				$this->forceLocaleRedirect = true;
+			}
 		}
 
 		// check if available locale
@@ -158,7 +191,7 @@ class App {
 			}
 		}
 
-		if((!$this->detect->isTablet() && $this->detect->isMobile()) && !empty($this->config["forceMobileRedirect"]) && !preg_match("/(" . $this->currentLocale . "\/)?(" . addslashes($this->config["forceMobileRedirect"]) .")/i", $this->requestURI)) {
+		if(($this->detect->isTablet() || $this->detect->isMobile()) && !empty($this->config["forceMobileRedirect"]) && !preg_match("/(" . $this->currentLocale . "\/)?(" . addslashes($this->config["forceMobileRedirect"]) .")/i", $this->requestURI)) {
 			$p = $this->config["basePath"];
 			if(!$this->noLocaleInRoute) {
 				$p .= $this->currentLocale . "/";
@@ -178,18 +211,8 @@ class App {
 				header("Location: " . $p);
 				exit();
 			}else {
-				
-			}
-		}
-	}
 
-	protected function redirect($path) {
-		if(($this->detect->isTablet() || (!$this->detect->isTablet() && !$this->detect->isMobile()))  && $this->requestURI != $path) {
-			header("Location: " . $path);
-			exit();
-		} elseif($this->detect->isMobile() && !$this->detect->isTablet() && $this->requestURI != "/mobile" . $path) {
-			header("Location: /mobile" . $path);
-			exit();
+			}
 		}
 	}
 
@@ -264,10 +287,10 @@ class App {
 	}
 
 	protected function getBuild() {
-		if(!$this->detect->isTablet() && $this->detect->isMobile()) {
+		if($this->detect->isTablet() || $this->detect->isMobile()) {
 			return "mobile";
 		}
-		return "default";
+		return "desktop";
 	}
 
 	protected function getJSFile($fileInput, $build) {
@@ -290,6 +313,8 @@ class App {
 		$javascripts = self::getArrayContentFrom($javascriptsFilePath);
 		$scripts = $this->getJSFiles($javascripts);
 
+		$oldBrowser = false;
+
 		$detect = array();
 		if($this->detect->isTablet()) {
 			$detect["device"] = "tablet";
@@ -308,10 +333,20 @@ class App {
 			} elseif(preg_match('/windows|win32/i', $this->detect->getUserAgent())) {
 				$detect["os"] = "windows";
 			}
-			if(!preg_match('/opera|webtv/i', $this->detect->getUserAgent()) && (preg_match('/msie\s(\d*)/i', $this->detect->getUserAgent(), $version) || preg_match("/trident\/.*rv:(\d*)/i", $this->detect->getUserAgent(), $version))) {
+			if(
+				!preg_match('/opera|webtv/i', $this->detect->getUserAgent())
+				&& (
+					preg_match('/edge\/(\d*)/i', $this->detect->getUserAgent(), $version)
+					|| preg_match('/msie\s(\d*)/i', $this->detect->getUserAgent(), $version)
+					|| preg_match("/trident\/.*rv:(\d*)/i", $this->detect->getUserAgent(), $version)
+				)
+			) {
 				$detect["browser"] = "ie";
 				if(count($version) > 1) {
 					$detect["browser"] .= " ie" . $version[1];
+					if($version[1] < 10) {
+						$oldBrowser = true;
+					}
 				}
 			} elseif(preg_match('/firefox/i', $this->detect->getUserAgent())) {
 				$detect["browser"] = "firefox";
@@ -321,17 +356,51 @@ class App {
 				$detect["browser"] = "chrome";
 			} elseif(preg_match('/safari/i', $this->detect->getUserAgent())) {
 				$detect["browser"] = "safari";
+			} else {
+				$detect["browser"] = "";
 			}
 		}
 
+		// old browsers
+		if(!$this->config["compileTemplates"]) {
+			if(!$this->detect->isTablet() && !$this->detect->isMobile()) {
+				if($oldBrowser) {
+					if(strpos($this->requestURI, "/old") !== false) {
+						$this->layout = "old";
+					} else {
+						$p = $this->config["basePath"];
+						if(!$this->noLocaleInRoute) {
+							$p .= $this->currentLocale . "/";
+						}
+						$p .= "old";
+						header("Location: " . $p);
+						exit();
+					}
+				} else {
+					if(strpos($this->requestURI, "/old") !== false) {
+						$p = $this->config["basePath"];
+						if(!$this->noLocaleInRoute) {
+							$p .= $this->currentLocale . "/";
+						}
+						header("Location: " . $p);
+						exit();
+					}
+				}
+			}
+		}
+
+		$baseURL = $this->config["baseURL"] . $this->config["basePath"];
+
 		$noLocaleInRoute = $this->noLocaleInRoute ? "true": "false";
 		$globalContent = array(
-			"baseURL" => $this->config["baseURL"] . $this->config["basePath"],
+			"baseURL" => $baseURL,
 			"currentURL" => $this->config["currentURL"],
 			"locale" => $this->currentLocale,
 			"basePath" => $this->config["basePath"],
 			"isDesktop" => (($detect["device"] == "desktop" || $detect["device"] == "tablet") && strpos($this->config["currentURL"],'/mobile') === false),
-			"noLocaleInRoute" => $noLocaleInRoute
+			"noLocaleInRoute" => $noLocaleInRoute,
+			"assetsPath" => $this->config["assetsPath"],
+			"assetsBaseURL" => $this->config["assetsBaseURL"]
 		);
 
 		// datas for template engine
@@ -350,6 +419,32 @@ class App {
 		if($this->config["compileTemplates"]) {
 			unset($this->content["scripts"]);
 		}
+	}
+
+	protected function isSoonBrowser($browser) {
+		if(array_key_exists("force", $_GET)) {
+			return true;
+		}
+		switch ($browser) {
+			case "firefox":
+				if(floatval($this->detect->version("Firefox")) < 40) {
+					return true;
+				}
+				break;
+			case "safari":
+				if(floatval($this->detect->version("Safari")) < 8) {
+					return true;
+				}
+				break;
+			default:
+				if(strpos($browser, "ie") === 0 && !preg_match('/opera|webtv/i', $this->detect->getUserAgent()) && (preg_match('/msie\s(\d*)/i', $this->detect->getUserAgent(), $version) || preg_match("/trident\/.*rv:(\d*)/i", $this->detect->getUserAgent(), $version))) {
+					if(intval($version[1]) < 11) {
+						return true;
+					}
+				}
+				break;
+		}
+		return false;
 	}
 
 	protected function getModuleByRoute($route, $data) {

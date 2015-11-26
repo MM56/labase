@@ -3,8 +3,12 @@ module.exports =
 		options:
 			compress:
 				drop_console: true
+			screwIE8: true
 		all:
 			expand: true
-			cwd: "<%= globalConfig.buildPath %>/js"
-			src: "**/*.js"
-			dest: "<%= globalConfig.buildPath %>/js"
+			cwd: "<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/js"
+			src: [
+				"build.js"
+				"build.mobile.js"
+			]
+			dest: "<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/js"

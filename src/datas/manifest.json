@@ -2,27 +2,7 @@
 	{
 		"id": "defaultDesktop",
 		"files": [
-		]
-	},
-	{
-		"id": "page1",
-		"files": [
-			{
-				"id": "tpl",
-				"src": "tpl/partials/page1.hbs"
-			}
-		],
-		"dependencies" : [
-			"defaultDesktop"
-		]
-	},
-	{
-		"id": "page2",
-		"files": [
-			{
-				"id": "tpl",
-				"src": "tpl/partials/page2.hbs"
-			}
+			
 		]
 	},
 	{
@@ -30,7 +10,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/a.hbs"
+				"src": "shared/tpl/partials/a.hbs"
 			}
 		]
 	},
@@ -39,7 +19,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/a1.hbs"
+				"src": "shared/tpl/partials/a1.hbs"
 			}
 		]
 	},
@@ -48,7 +28,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/a2.hbs"
+				"src": "shared/tpl/partials/a2.hbs"
 			}
 		]
 	},
@@ -57,7 +37,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/b.hbs"
+				"src": "shared/tpl/partials/b.hbs"
 			}
 		],
 		"dependencies" : [
@@ -69,7 +49,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/c.hbs"
+				"src": "shared/tpl/partials/c.hbs"
 			}
 		]
 	},
@@ -78,7 +58,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/d.hbs"
+				"src": "shared/tpl/partials/d.hbs"
 			}
 		],
 		"dependencies" : [
@@ -90,7 +70,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/e.hbs"
+				"src": "shared/tpl/partials/e.hbs"
 			}
 		],
 		"dependencies" : [
@@ -102,7 +82,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/f.hbs"
+				"src": "shared/tpl/partials/f.hbs"
 			}
 		],
 		"dependencies" : [
@@ -114,7 +94,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/g.hbs"
+				"src": "shared/tpl/partials/g.hbs"
 			}
 		]
 	},
@@ -123,7 +103,7 @@
 		"files": [
 			{
 				"id": "tpl",
-				"src": "tpl/partials/h.hbs"
+				"src": "shared/tpl/partials/h.hbs"
 			}
 		]
 	}

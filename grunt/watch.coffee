@@ -16,3 +16,9 @@ module.exports =
 		magipack:
 			files: ['src/datas/manifest.json']
 			tasks: ['packImages']
+		svgs:
+			files: ['src/svg/**/*.svg']
+			tasks: ['svgsjson']
+		vendors:
+			files: ['static/vendor/**/*.js']
+			tasks: ['copy:vendors']

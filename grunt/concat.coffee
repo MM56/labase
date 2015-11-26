@@ -1,28 +1,31 @@
 module.exports = (grunt) ->
 	options = grunt.option "globalConfig"
 	builds = options.builds
+	srcPath = options.assetsPath
+
 	taskConfig = {
-		concat: {
-			vendors : {
-				files : {}
-			}
-			sprites : {
+		concat:
+			vendors_preprod:
+				files: {}
+			vendors_staging:
+				files: {}
+			vendors_prod:
+				files: {}
+			sprites:
 				src: ['<%= globalConfig.srcPath %>/scss/sprites/*'],
 				dest: '<%= globalConfig.srcPath %>/scss/utils/_sprites-variables.scss'
-			}
-		}
 	}
 
-	vendors = options.vendorsJS
-	for build, buildParts of builds
-		tmpVendors = []
-		for vendor in vendors
-			if vendor instanceof Object
-				if vendor.builds.indexOf(build) > -1
-					tmpVendors.push vendor.file
-			else
-				tmpVendors.push vendor
-		dest = options.buildPath + "/js/" + buildParts.vendors + ".js"
-		taskConfig.concat.vendors.files[dest] = tmpVendors
+	srcs = options.vendors
+	for env in ["preprod", "staging", "prod"]
+		for build, buildParts of builds
+			tmpSrcs = []
+			for src in srcs
+				if typeof src == "object"
+					if src.builds.indexOf(build) > -1
+						tmpSrcs.push srcPath + "/" + src.file
+				else
+					tmpSrcs.push srcPath + "/" + src
+			taskConfig.concat["vendors_" + env].files[options.buildPath + "/js/" + buildParts.vendors + ".js"] = tmpSrcs
 
 	return taskConfig

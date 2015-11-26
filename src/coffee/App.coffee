@@ -4,6 +4,7 @@ class App
 	listeners : null
 
 	constructor: ->
+		window.app = @
 		@initGlobal()
 
 	initGlobal: =>
@@ -11,38 +12,45 @@ class App
 		@pixelRatio = 2 if window.devicePixelRatio > 2
 		@pixelRatio += "x"
 
+		@datas =
+			pixelRatio: @pixelRatio
+			svg: svg
+			GLOBAL:
+				baseURL: baseURL
+				basePath: basePath
+				locale: locale
+				assetsPath: assetsPath
+				assetsBaseURL: assetsBaseURL
+
 		W.init()
-		@manifestLoader = new ManifestLoader(basePath, { "pixelRatio" : @pixelRatio })
+		@manifestLoader = new ManifestLoader(basePath, @datas)
 		@manifestLoader.isPhone = W.isPhone
 		@manifestLoader.isTablet = W.isTablet
 		@manifestLoader.isDesktop = W.isDesktop
 		@manifestLoader.isWebp = W.isWebp
 
 		rAFManager.init()
+		VScroll.init()
 
-		if W.html.hasClass "csstransforms3d"
+		@mainLoader = new MainLoader()
+
+		if W.html.hasClass "csstransforms3d" && ["staging", "prod"].indexOf(env) == -1
 			FunctionStats.init()
 
+		@init()
+
 	init: =>
-		@datas = {}
 		@loadConfig()
 
 	loadConfig: =>
 		@manifestLoader.defaults["modulesRoutes"] = routesJSON
 		@manifestLoader.defaults["l10n"] = l10nJSON
 		@manifestLoader.defaults["manifest"] = manifestJSON
-
-		@manifestLoader.complete.add @onConfigLoaded
-		@manifestLoader.load "defaultDesktop"
+		@onConfigLoaded()
 
 	onConfigLoaded: () =>
 		@manifestLoader.complete.remove @onConfigLoaded
 		@datas.l10n = @manifestLoader.defaults.l10n
-		@datas.GLOBAL = {
-			baseURL: baseURL
-			basePath: basePath
-			locale: locale
-		}
 		@manifestLoader.addData @datas.l10n
 		@manifestLoader.addCachedTemplates(defaultTemplates)
 		@onModulesRoutesLoaded(@manifestLoader.defaults)
@@ -50,8 +58,8 @@ class App
 	onModulesRoutesLoaded: (data) =>
 		@datas.modulesRoutes = data.modulesRoutes
 		ModulesManager.setModulesRoutesData @datas.modulesRoutes
-		@initModulesDefault()
 		@initRouter()
+		@initModulesDefault()
 		@connectSwitcherToRouter()
 		@start()
 
@@ -66,7 +74,7 @@ class App
 	# 	console.log "---------------", routeObject
 
 	initRouter: =>
-		@router = new Router(locale, @datas.l10n, noLocaleInRoute)
+		@router = new RouterExtend(locale, @datas.l10n, noLocaleInRoute)
 		@router.addRoutes ModulesManager.routes
 
 	connectSwitcherToRouter: =>
@@ -78,3 +86,4 @@ class App
 	onRoutesMatched: (matchedRoutes) =>
 		ModulesManager.switch matchedRoutes
 
+new App()

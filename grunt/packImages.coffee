@@ -54,7 +54,7 @@ module.exports = (grunt) ->
 					offset = 0
 					offset = parseInt file.offset, 10 if file.offset?
 					nbFiles = 1 if file.firstFrame? && file.firstFrame
-						
+
 					for j in [offset...nbFiles]
 						srcTmp = compile src, {sequence: j}
 						files.push {id: file.id + j, src: srcTmp}
@@ -73,7 +73,7 @@ module.exports = (grunt) ->
 			tmpImagesPath = batchPath + "/tmp"
 			for file in files
 
-				grunt.file.copy options.buildPath + "/" + file.src, tmpImagesPath + "/" + file.src
+				grunt.file.copy options.assetsFolder + "/" + options.version + "/" + file.src, tmpImagesPath + "/" + file.src
 			if batchSupport?
 				exec 'packImages -p ' + tmpImagesPath + ' -o ' + batchPath + ' -n ' + "images." + batchSupport
 			else
@@ -92,9 +92,10 @@ module.exports = (grunt) ->
 	grunt.registerTask "packImages", () ->
 		options = grunt.option "globalConfig"
 		manifestData = grunt.file.readJSON(options.srcPath + "/datas/manifest.json")
-		packPath = options.buildPath + "/packs"
+		packPath = options.assetsFolder + "/" + options.version + "/packs"
 
-		grunt.file.delete packPath
+		if grunt.file.exists packPath
+			grunt.file.delete packPath
 		grunt.file.mkdir packPath
 
 		for batch in manifestData
@@ -116,14 +117,14 @@ module.exports = (grunt) ->
 					batchFilesTmp = batchFilesTmp.concat(batchFiles).unique()
 				batchFiles = get(batch, packPath, options)
 				batchFilesTmp = batchFilesTmp.concat(batchFiles).unique()
-			else		
+			else
 				batchFiles = get(batch, packPath, options)
 				batchFilesTmp = batchFilesTmp.concat(batchFiles).unique()
 
 			if batchFiles?
 				batch.files = batchFilesTmp
-			
-		grunt.file.write options.buildPath + "/datas/manifest.json", JSON.stringify(manifestData, null, '\t')
+
+		grunt.file.write options.buildPath + "/shared/datas/manifest.json", JSON.stringify(manifestData, null, '\t')
 		return null
 
 	return {}

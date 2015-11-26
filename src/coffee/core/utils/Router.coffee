@@ -1,103 +1,150 @@
 class Router
 
-	routeMatched: null
+	#
+	matchedRoute: null
+
+	# on init
+	l10n: null
+	noLocaleInRoute: false
 	regexps: null
 	routes: null
 	locale: null
-	l10n: null
-	currentHash: null
-	noLocaleInRoute: false
+
+	# signals
 	onSameRoute: null
-	previousRoute: null
-	previousHash: null
+	routeMatched: null
+	middlewareRefused: null
+
+	# accessible
+	lastRoute: null
+	tmpNextRoute: null
+	nextRoute: null
+	isPopState: false
 
 	constructor: (@locale, @l10n, @noLocaleInRoute) ->
 		@onSameRoute = new MM.Signal()
 		@routeMatched = new MM.Signal()
+		@middlewareRefused = new MM.Signal()
 		@regexps = []
+		@isPopState = false
 
 		window.addEventListener "popstate", @onPopState
 
 	onPopState: (event) =>
-		return if event?.state? && !Object.keys(event.state).length
+		return if !event?.state?
+		@isPopState = true
 		@navigate(event.state)
 
 	navigate: (hash, @extra) =>
-		@previousHash = @currentHash
-		@currentHash = hash
-		@parse()
+		@parse(hash)
 
 	replaceState: (hash) =>
 		if !@extra? || (@extra.silent? && !@extra.silent)
 			if window.history.pushState
-				if @previousRoute == hash
+				if !@lastRoute?
+					return
+				if @lastRoute.cleanFull == hash
 					window.history.replaceState(hash, null, hash)
 				else
 					window.history.pushState(hash, null, hash)
 			else
 				console.error "Not supporting window.history.pushState"
 
-	parse: =>
-		if @currentHash?
-			currentRoute = @currentHash
-		else
-			currentRoute = window.location.pathname
-			if currentRoute.indexOf(basePath) == 0
-				currentRoute = currentRoute.substr basePath.length
+	parse: (hash) =>
+		if !hash?
+			# on init
+			hash = @removeBasePath window.location.pathname
 
-		currentRoute = StringUtils.removeLeadingSlash(currentRoute)
+		@lastRoute = @nextRoute
+		@tmpNextRoute = @buildRouteObjectFromHash hash
 
-		if !@noLocaleInRoute
-			if currentRoute.indexOf(@locale) == 0
-				currentRoute = currentRoute.substr @locale.length
-				currentRoute = StringUtils.removeLeadingSlash(currentRoute)
+		if @lastRoute? && @lastRoute.cleanFull == @tmpNextRoute.cleanFull
+			@onSameRoute.dispatch()
+			return
 
-			currentRoute = "/" + @locale + "/" + currentRoute
-		else
-			currentRoute =  "/" + currentRoute
+		console.log '%c Router ', 'background: #555; color: #fff', @tmpNextRoute.clean
 
-		currentRoute = StringUtils.removeTrailingSlash(currentRoute)
-		currentRoute += "/"
-
-
-		# case when subfolders
-		realRoute = StringUtils.removeLeadingSlash(currentRoute)
-		realRoute = basePath + realRoute
-
-		@replaceState(realRoute)
-
-		if @previousRoute?
-			if @previousRoute == currentRoute
-				@onSameRoute.dispatch()
-				return
-
-		@previousRoute = currentRoute
-
-		console.log '%c Router ', 'background: #555; color: #fff', currentRoute
-
-		matchedRoutes = []
+		# assume we have only 1 route
+		matchedRoute = null
 		for regexpObject, i in @regexps
-			regexpResult = regexpObject.regexp.exec currentRoute
+			regexpResult = regexpObject.regexp.exec @tmpNextRoute.clean
 			if regexpResult?
 				rawParams = regexpResult.splice(1)
 				params = {}
 				for rawParam, j in rawParams
 					params[regexpObject.keys[j].name] = rawParam
-				matchedRoutes.push {route: @routes[i], params: params}
+				routeObj = regexpObject.routeObj
+				matchedRoute = {route: routeObj.routes[0], params: params, middleware: routeObj.middleware}
+				break
 
-		if matchedRoutes.length > 0
-			@routeMatched.dispatch matchedRoutes
+		@parseResponse(matchedRoute)
+
+	parseResponse: (matchedRoute) =>
+		if matchedRoute?
+			if matchedRoute.middleware?
+				@matchedRoute = matchedRoute
+				MiddlewareMethods.RESPONSE.addOnce @onMiddlewareResponse
+				MiddlewareMethods.callMethod matchedRoute.middleware
+			else
+				@doReplaceState()
+				@nextRoute = @tmpNextRoute
+				@routeMatched.dispatch [matchedRoute]
 		else
 			console.error "No routes matched."
+
+	onMiddlewareResponse: (isPositive) =>
+		@nextRoute = @tmpNextRoute
+		if isPositive
+			matchedRoute = @matchedRoute
+			@doReplaceState()
+		else
+			@middlewareRefused.dispatch()
+			return
+
+		@routeMatched.dispatch [matchedRoute]
+
+	doReplaceState: =>
+		if !@isPopState
+			@replaceState @tmpNextRoute.cleanFull
+		@isPopState = false
+
+	removeBasePath: (str) =>
+		if str.indexOf(basePath) == 0
+			return str.substr basePath.length
+		return str
+
+	buildRouteObjectFromHash: (hash) =>
+		route = {}
+		route.raw = hash
+
+		hash = StringUtils.removeLeadingSlash hash
+		if @noLocaleInRoute
+			hash =  "/" + hash
+		else
+			localeRegex = new RegExp("^" + @locale + "([^\\w]|$)")
+			hash = hash.replace localeRegex, ""
+			hash = StringUtils.removeLeadingSlash(hash)
+			hash = "/" + @locale + "/" + hash
+		hash = StringUtils.removeTrailingSlash(hash)
+		hash += "/"
+		route.clean = hash
+
+		hash = StringUtils.removeLeadingSlash(hash)
+		hash = basePath + hash
+		route.cleanFull = hash
+
+		return route
+
 	addRoutes: (@routes) =>
-		for route in @routes
-			localizedRoute = @localizeRoute(route)
-			keys = []
-			if @noLocaleInRoute
-				route = localizedRoute
-			else
-				route = "/" + @locale + localizedRoute
-			@regexps.push {regexp: pathToRegexp(route, keys), keys: keys}
+		for routeObj in @routes
+			for route in routeObj.routes
+				localizedRoute = @localizeRoute(route)
+				keys = []
+				if @noLocaleInRoute
+					route = localizedRoute
+				else
+					route = "/" + @locale + localizedRoute
+				@regexps.push {regexp: pathToRegexp(route, keys), keys: keys, middleware: routeObj.middleware, routeObj: routeObj}
 
 	localizeRoute: (route) =>
 		template = Handlebars.compile route

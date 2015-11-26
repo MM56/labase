@@ -1,0 +1,1 @@
+class MiddlewareMethods extends Middleware

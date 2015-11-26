@@ -44,14 +44,11 @@ Thumbs.db
 *.casted5.*
 
 # Generated dist files
-dist/css
 src/scss/utils/_sprites-variables.scss
-dist/js
-dist/img/static
-dist/img/sprites
-dist/packs
-dist/datas/buildInfo.json
-dist/datas/manifest.json
+dist/shared/datas/manifest.json
 grunt/config/*.json
 crea
 docs
+dist/shared/datas/svgs.json
+dist/shared/datas/buildInfo.json
+dist/static/*

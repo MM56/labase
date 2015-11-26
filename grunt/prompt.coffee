@@ -7,7 +7,7 @@ module.exports = (grunt) ->
 						config: "env"
 						type: "list"
 						message: "Choose an environment"
-						choices: ["dev", "staging", "prod"]
+						choices: ["dev", "preprod", "staging", "prod"]
 					}
 					{
 						config: "minimages"

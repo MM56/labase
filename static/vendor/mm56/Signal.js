@@ -1,5 +1,4 @@
 var MM = MM || {};
-
 MM.Signal = (function() {
 
 	function Signal() {

@@ -21,7 +21,7 @@ class IfEqualHelper implements Helper
 
 	public function execute(Template $template, Context $context, $args, $source)
 	{
-		$parsedArgs = $template->parseArguments($args);
+		$parsed_args = $template->parseArguments($args);
 		if (empty($parsed_args) || count($parsed_args) < 2) {
 			return '';
 		}

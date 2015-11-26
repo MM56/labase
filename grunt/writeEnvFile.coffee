@@ -10,9 +10,9 @@ module.exports = (grunt) ->
 		else
 			console.error "ERROR: MISSING FILE grunt/config/local.json"
 
-		buildInfo = {
+		buildInfo =
 			env: env
-		}
-		grunt.file.write options.buildPath + "/datas/buildInfo.json", JSON.stringify(buildInfo)
+			assetsPath: options.assetsPath + "/" + options.version + "/"
+		grunt.file.write options.buildPath + "/shared/datas/buildInfo.json", JSON.stringify(buildInfo)
 
 	return {}

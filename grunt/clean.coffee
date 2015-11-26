@@ -2,20 +2,17 @@ module.exports =
 	clean:
 		all: [
 			"<%= globalConfig.buildPath %>/conf/*"
-			"<%= globalConfig.buildPath %>/css/*"
-			"<%= globalConfig.buildPath %>/js/*"
+			"<%= globalConfig.buildPath %>/css"
+			"<%= globalConfig.buildPath %>/js"
 			"<%= globalConfig.buildPath %>/manifest.appcache"
-			"<%= globalConfig.buildPath %>/img/sprites"
+			"<%= globalConfig.buildPath %>/img"
+			"<%= globalConfig.buildPath %>/static/*"
 		]
 		sprites: [
 			"<%= globalConfig.buildPath %>/img/sprites"
 		]
-		img: [
-			"<%= globalConfig.buildPath %>/img/static"
-		]
 		js: [
-			"<%= globalConfig.buildPath %>/js/*"
-			"!<%= globalConfig.buildPath %>/js/built*.js"
+			"<%= globalConfig.buildPath %>/js"
 		]
 		sass: [
 			"<%= globalConfig.srcPath %>/scss/sprites"

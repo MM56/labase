@@ -22,7 +22,6 @@ class ModulesManager
 
 	@cloneModulesRoutes: () =>
 		modulesRoutes = $.extend true, {}, @modulesRoutesData
-		routes = parseRoutes modulesRoutes.modules
 		createParents modulesRoutes
 		return modulesRoutes
 
@@ -257,9 +256,9 @@ class ModulesManager
 		for modulesRoutes in data
 			if modulesRoutes.routes?
 				if typeof modulesRoutes.routes == "string"
-					routes.push modulesRoutes.routes
+					routes.push {routes: [modulesRoutes.routes], middleware: modulesRoutes.middleware}
 				else if modulesRoutes.routes instanceof Array
-					routes = routes.concat modulesRoutes.routes
+					routes.push {routes: modulesRoutes.routes, middleware: modulesRoutes.middleware}
 			if modulesRoutes.modules?
 				routes = routes.concat parseRoutes(modulesRoutes.modules)
 		return routes

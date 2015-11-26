@@ -1,0 +1,1 @@
+class RouterExtend extends Router

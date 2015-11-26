@@ -6,48 +6,56 @@
 			"vendor/jquery/jquery-2.1.1.min.js",
 			"vendor/greensock/TweenMax.min.js",
 			"vendor/handlebars.js",
-			"vendor/createjs/preloadjs-0.6.1.min.js",
-			"vendor/createjs/soundjs-0.6.1.min.js",
 			"vendor/rAF.js",
 			{"file": "vendor/fastclick.js", "builds": ["mobile"]},
 			"vendor/mm56/Signal.js",
 			"vendor/stats.min.js",
 			"vendor/pathToRegexp.min.js",
 			"vendor/mm56/css.js",
+			"vendor/mm56/Signal.js",
+			"vendor/mm56/loader.js",
+			"vendor/mm56/WebWorkerUtils.js",
 			"vendor/console.snapshot.js",
 			"vendor/mm56/log.js",
-			"vendor/Magipack.js",
-			"vendor/bodymovin.min.js"
+			"vendor/Magipack.js"
 		],
 		"src": [
+			{"file": "MainLoader", "builds": ["desktop"]},
 			"core/loader/ManifestLoader",
+			"core/utils/Middleware",
 			"core/utils/Router",
+			"RouterExtend",
 			"core/utils/TemplateRenderer",
+			"core/utils/Cache",
 			"core/modules/ModulesManager",
 			"core/modules/AbstractModule",
 			"core/modules/ModulesSwitcher",
 			"utils/Transition",
 			"utils/StringUtils",
 			"utils/FunctionUtils",
+			"utils/VScroll",
 			"utils/FunctionStats",
 			"utils/W",
 			"utils/rAFManager",
 			"utils/MouseEvent",
+			{"file": "display/video/Video", "builds": ["desktop"]},
+			{"file": "display/video/VideoController", "builds": ["desktop"]},
+			"display/movieclip/MovieClip",
+			"display/movieclip/SpriteMovieClip",
 			"modules/BaseModule",
 			"modules/LoaderModule",
-			"modules/PageModule",
 			"modules/FakeModule",
-			"App",
-			"MainLoader"
+			"MiddlewareMethods",
+			"App"
 		]
 	},
 	"builds": {
-		"default": {
+		"desktop": {
 			"vendors": "vendors",
 			"src": "build"
 		},
 		"mobile": {
-			"vendors": "vendors",
+			"vendors": "vendors.mobile",
 			"src": "build.mobile"
 		}
 	}

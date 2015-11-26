@@ -3,12 +3,12 @@ module.exports =
 		dev:
 			bsFiles:
 				src: [
-					'<%= globalConfig.buildPath %>/css/style.desktop.css'
-					'<%= globalConfig.buildPath %>/css/style.mobile.css'
-					'<%= globalConfig.buildPath %>/datas/l10n/**'
+					"<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/css",
+					"<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/img"
+					"<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/js",
+					"<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/vendor",
+					"<%= globalConfig.buildPath %>/shared/**"
 					# '<%= globalConfig.buildPath %>/img/**'
-					'<%= globalConfig.buildPath %>/js/**'
-					'<%= globalConfig.buildPath %>/tpl/**'
 				]
 			options:
 				# host: "ltdmi.local.com"

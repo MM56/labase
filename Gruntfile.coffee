@@ -4,70 +4,106 @@ module.exports = (grunt) ->
 
 	tasks = {
 		dev: [
-			"clean:all",
+			"clean:all"
+			"version"
+			"svgsjson"
 			"sprites"
-			"sass",
-			"clean:img",
-			"copy:img",
-			"packImages",
-			"coffee:dev",
-			"writeEnvFile:dev", "copy:dev",
-			"browserSync",
+			"sass"
+			"copy:img"
+			"packImages"
+			"coffee:dev"
+			"writeEnvFile:dev"
+			"copy:dev"
+			"copy:fonts"
+			"copy:vendors"
+			"copy:medias"
+			"copy:models"
+			"copy:pdf"
+			"browserSync"
 			"watch"
+		]
+		preprod: [
+			"clean:all"
+			"version"
+			"svgsjson"
+			"sprites"
+			"sass"
+			"copy:img"
+			"packImages"
+			"coffee:preprod"
+			"concat:vendors_preprod"
+			"writeEnvFile:preprod"
+			"copy:preprod"
+			"copy:fonts"
+			"copy:medias"
+			"copy:pdf"
+			"copy:js"
+			"copy:models"
+			# "uglify"
+			"clean:js"
 		]
 		staging: [
 			"clean:all"
+			"version"
+			"svgsjson"
 			"sprites"
 			"sass"
-			"clean:img"
 			"copy:img"
 			"packImages"
-			"concat:vendors"
 			"coffee:staging"
-			"writeEnvFile:staging", "copy:staging"
-			"uglify"
+			"concat:vendors_staging"
+			"writeEnvFile:staging"
+			"copy:staging"
+			"copy:fonts"
+			"copy:medias"
+			"copy:models"
+			"copy:pdf"
+			"copy:js"
+			# "uglify"
+			"clean:js"
 		]
 		prod: [
 			"clean:all"
+			"version"
+			"svgsjson"
 			"sprites"
 			"sass"
-			"clean:img"
 			"copy:img"
 			"packImages"
-			"concat:vendors"
 			"coffee:prod"
-			"writeEnvFile:prod", "copy:prod"
+			"concat:vendors_prod"
+			"writeEnvFile:prod"
+			"copy:prod"
+			"copy:fonts"
+			"copy:medias"
+			"copy:models"
+			"copy:pdf"
+			"copy:js"
 			"uglify"
+			"clean:js"
 		]
 	}
 
 	srcPath = "src"
 	buildPath = "dist"
+	assetsPath = "static"
 
-	javascriptsFiles = grunt.file.readJSON("dist/datas/javascripts.json")
-
-	vendorsJS = []
-	javascriptsFiles.files.vendors.forEach (path) ->
-		if path instanceof Object
-			path.file = buildPath + "/" + path.file
-			vendorsJS.push path
-		else
-			vendorsJS.push buildPath + "/" + path
-
-	srcJS = []
-	javascriptsFiles.files.src.forEach (path) ->
-		srcJS.push srcPath + "/coffee/" + path + ".coffee"
+	javascriptsFiles = grunt.file.readJSON("dist/shared/datas/javascripts.json")
 
 	gruntFolder = "./grunt"
+
+	assetsFolder = buildPath + "/" + assetsPath
 
 	config =
 		globalConfig:
 			gruntTasksFolder: gruntFolder
 			srcPath: srcPath
 			buildPath: buildPath
-			vendorsJS: vendorsJS
 			builds: javascriptsFiles.builds
-			srcJS: srcJS
+			srcs: javascriptsFiles.files.src
+			vendors: javascriptsFiles.files.vendors
+			assetsFolder: assetsFolder
+			assetsPath: assetsPath
 
 	localConfFile = gruntFolder + "/config/local.json"
 	if grunt.file.exists localConfFile

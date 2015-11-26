@@ -1,6 +1,7 @@
 module.exports = (grunt) ->
 	options = grunt.option "globalConfig"
 	builds = options.builds
+	srcPath = options.srcPath
 
 	taskConfig = {
 		coffee:
@@ -10,11 +11,16 @@ module.exports = (grunt) ->
 					sourceMap: options.sourceMap
 				files: [
 					expand: true
-					cwd: '<%= globalConfig.srcPath %>/coffee/'
-					src: ['**/*.coffee']
-					dest: '<%= globalConfig.buildPath %>/js/'
-					ext: '.js'
+					cwd: "<%= globalConfig.srcPath %>/coffee/"
+					src: ["**/*.coffee"]
+					dest: "<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/js/"
+					ext: ".js"
 				]
+			preprod:
+				options:
+					bare: true
+					join: true
+				files: {}
 			staging:
 				options:
 					bare: true
@@ -27,15 +33,15 @@ module.exports = (grunt) ->
 				files: {}
 	}
 
-	srcs = options.srcJS
-	for env in ["staging", "prod"]
+	srcs = options.srcs
+	for env in ["preprod", "staging", "prod"]
 		for build, buildParts of builds
 			tmpSrcs = []
 			for src in srcs
-				if src instanceof Object
+				if typeof src == "object"
 					if src.builds.indexOf(build) > -1
-						tmpSrcs.push src.file
+						tmpSrcs.push srcPath + "/coffee/" + src.file + ".coffee"
 				else
-					tmpSrcs.push src
-			taskConfig.coffee[env].files[options.buildPath + '/js/' + buildParts.src + '.js'] = tmpSrcs
+					tmpSrcs.push srcPath + "/coffee/" + src + ".coffee"
+			taskConfig.coffee[env].files[options.buildPath + "/js/" + buildParts.src + ".js"] = tmpSrcs
 	return taskConfig

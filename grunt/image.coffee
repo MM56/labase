@@ -4,7 +4,7 @@ module.exports = (grunt) ->
 		min:
 			files: [
 				expand: true,
-				cwd: "<%= globalConfig.buildPath %>/img/",
+				cwd: "<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/img/",
 				src: ["**/*.{jpg,png,gif}"],
-				dest: "<%= globalConfig.buildPath %>/img/"
+				dest: "<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/img/"
 			]

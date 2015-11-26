@@ -1,8 +1,8 @@
 module.exports = (grunt) ->
 	taskConfig =
 		deleteSync :
-			sync : 
-				cwd : "<%= globalConfig.buildPath %>/img/static"
+			sync :
+				cwd : "<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/img/static"
 				src: ["**/*"]
 				syncWith: "<%= globalConfig.srcPath %>/img/static"
 

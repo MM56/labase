@@ -260,7 +260,6 @@ window.Magipack = (function() {
 			if(!type) type = 'text/plain';
 			return this._getRange(arguments[0], arguments[1], type);
 		}
-
 		var file = this._findFile(arguments[0]);
 		if(!file) throw new Error('File not found in pack.');
 		type = file[3];

@@ -1,9 +1,16 @@
 class Video
 
+	@DEFAULT_WIDTH: 1280
+	@DEFAULT_HEIGHT: 720
+
 	id 	  : null
 	$elt  : null
 	elt   : null
 	available : true
+	onlyPreload: false
+	loop: false
+	originalWidth: 0
+	originalHeight: 0
 
 	onVideoEnded   	 	 : null
 	onVideoWaited		 : null
@@ -12,10 +19,17 @@ class Video
 	onVideoProgressed	 : null
 	onVideoTimeUpdated   : null
 	onVideoFullScreen    : null
-	
-	constructor: (@id) ->
+	options: null
+
+	constructor: (@id, @originalWidth = Video.DEFAULT_WIDTH, @originalHeight = Video.DEFAULT_HEIGHT, options) ->
+		@options = {}
+		@options.autoResize = true
+		
+		for key, value of @options
+			@options[key] = if options?[key]? then options[key] else value
+
 		if typeof @id == "number"
-			elt = "<video id=\"video-" + @id + "\" class=\"video-controlled\" preload=\"none\"></video>"
+			elt = "<video id=\"video-" + @id + "\" class=\"video-controlled\" preload=\"false\"></video>"
 		else
 			elt = @id
 
@@ -38,22 +52,30 @@ class Video
 		@onResize()
 		@elt.load()
 
+		@elt.loop = @loop
+
 		# FF needs play() to get loadedmetadata & canplay events
 		if navigator.userAgent.indexOf("Firefox") > -1
 			@elt.play()
-		
+
 	bind: () =>
 		W.add @
 		@$elt.on "loadstart", @onLoadStart
 		@$elt.on "loadedmetadata", @onLoadedMetaData
 		@$elt.on "canplay", @onCanPlay
+		@$elt.on "abort", @onAbort
+		@$elt.on "emptied", @onEmptied
+		@$elt.on "error", @onError
+		@$elt.on "suspend", @onSuspend
+		@$elt.on "stalled", @onStalled
 		@$elt.on "timeupdate", @onTimeUpdate
 		@$elt.on "ended", @onEnded
 		@$elt.on "pause", @onPause
+		@$elt.on "play", @onPlay
 		@$elt.on "seeking", @onSeeking
 		@$elt.on "waiting", @onWaiting
 		@$elt.on "progress", @onProgress
-		
+
 		@onFullscreen()
 
 	unbind: () =>
@@ -63,7 +85,13 @@ class Video
 		@$elt.off "canplay", @onCanPlay
 		@$elt.off "timeupdate", @onTimeUpdate
 		@$elt.off "ended", @onEnded
+		@$elt.off "abort", @onAbort
+		@$elt.off "emptied", @onEmptied
+		@$elt.off "error", @onError
+		@$elt.off "suspend", @onSuspend
+		@$elt.off "stalled", @onStalled
 		@$elt.off "pause", @onPause
+		@$elt.off "play", @onPlay
 		@$elt.off "seeking", @onSeeking
 		@$elt.off "waiting", @onWaiting
 		@$elt.off "progress", @onProgress
@@ -142,11 +170,11 @@ class Video
 		@onVideoTimeUpdated.dispatch(e)
 
 	onEnded: (e) =>
-		#console.log "____ONENDED", @idSrc
-		@onVideoEnded.dispatch()
+		console.log "____ONENDED", @idSrc
+		@onVideoEnded.dispatch(@)
 
 	onPause: (e) =>
-		#console.log "____ONPAUSE", @idSrc
+		console.log "____ONPAUSE", @idSrc
 		@onVideoPaused.dispatch()
 
 	onSeeking: (e) =>
@@ -158,16 +186,35 @@ class Video
 		@onVideoWaited.dispatch()
 
 	onLoadStart: (e) =>
-		console.log "____ONLOADSTART", @idSrc, @elt.currentTime, @elt.playing
+		#console.log "____ONLOADSTART", @idSrc, @elt.currentTime, @elt.playing
 
 	onLoadedMetaData: (e) =>
-		console.log "____ONLOADEDMETADATA", @idSrc
+		#console.log "____ONLOADEDMETADATA", @idSrc
 
 	onCanPlay: (e) =>
-		console.log "____ONCANPLAY", @idSrc
+		console.log "____ONCANPLAY", @id
 		@onVideoLoaded.dispatch(@)
 
+	onError: (e) =>
+		#console.log "____ONERROR", @idSrc
+
+	onAbort: (e) =>
+		#console.log "____ONABORT", @idSrc
+
+	onEmptied: () =>
+		#console.log "____ONEMPTIED", @idSrc
+
+	onSuspend: (e) =>
+		#console.log "____ONSUSPEND", @idSrc
+
+	onStalled: (e) =>
+		#console.log "____ONSTALLED", @idSrc
+
+	onPlay: (e) =>
+		console.log "____ONPLAY", @idSrc
+
 	onResize: () =>
+		return if !@options.autoResize
 		@setSize()
 
 	# METHODS
@@ -221,6 +268,5 @@ class Video
 		@elt.setAttribute "src",source.src
 
 	setSize: () =>
-		size = FunctionUtils.getCoverSizeImage(1280, 720, W.ww, W.wh)
-		MM.css @$elt[0].css { "width" : size.width + "px" , "height" : size.height + "px", "top" : size.top + "px", "left" : size.left + "px"}
-		
+		size = FunctionUtils.getCoverSizeImage(@originalWidth, @originalHeight, W.ww, W.wh)
+		MM.css @$elt[0], { "width" : size.width + "px" , "height" : size.height + "px", "top" : size.top + "px", "left" : size.left + "px"}

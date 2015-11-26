@@ -77,7 +77,7 @@ class AliasIterableLoader extends FilesystemLoader implements Loader
      */
     public function load($name)
     {
-        if (array_key_exists($name, $this->_aliases) && count($this->_aliases[$name]) > 0) {
+        if (array_key_exists($name, $this->_aliases) && count($this->_aliases[$name]) > 0 && count($this->_aliases[$name]) > $this->_currentModuleId) {
             $name = $this->_aliases[$name][$this->_currentModuleId];
             $this->_currentModuleId++;
             if(is_array($name)) {
