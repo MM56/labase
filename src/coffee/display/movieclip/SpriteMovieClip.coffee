@@ -3,8 +3,8 @@ class SpriteMovieClip extends MovieClip
 	frameWidth: 0
 	frameHeight: 0
 
-	constructor: (@$elt) ->
-		super()
+	constructor: (@$elt, fps = 30) ->
+		super(fps)
 		@totalFrames = parseInt @$elt.data("frames"), 10
 		@frameWidth = @$elt.data("width")
 		@frameHeight = @$elt.data("height")

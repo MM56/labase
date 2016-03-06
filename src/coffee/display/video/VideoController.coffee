@@ -41,9 +41,13 @@ class VideoController
 	play: (src, options = {}) =>
 
 		vo = @getAvailableVo()
-		console.log src, vo
 		vo.src = src
+		if options.autoResize?
+			vo.options.autoResize = options.autoResize
 		vo.available = false
+		if options.origin?
+			vo.$elt.attr('crossorigin', options.origin)
+			vo.elt.crossOrigin = options.origin
 		vo.keepGoing = options.keepGoing || false
 		vo.onlyPreload = options.onlyPreload || false
 		vo.loop = options.loop || false
@@ -73,7 +77,16 @@ class VideoController
 		vo.pause()
 		vo.elt.muted = SoundManager.isMuted
 		vo.$elt.css "z-index", 2
+		vo.$elt.css "display", "block"
 		vo.play()
+
+	stopVo: (vo) =>
+		vo.play()
+		vo.seekTo(0)
+		vo.pause()
+		vo.elt.muted = SoundManager.isMuted
+		vo.$elt.css "z-index", 0
+		vo.$elt.css "display", "none"
 
 	searchBySrc: (src) =>
 		for vo in @videoObjects
@@ -89,14 +102,14 @@ class VideoController
 		vo.pause()
 		vo.onVideoLoaded.remove @onVideoCanPlay
 		vo.$elt.css "z-index", 0
+		vo.$elt.css "display", "none"
 		vo.$elt.attr "src", null
 		vo.$elt.children().remove()
 		vo.available = true
 		vo.loop = false
 		delete vo.src if vo.src?
 		delete vo.onlyPreload if vo.onlyPreload?
-		delete vo.keepGoing if vo.keepGoing?
-
+		delete vo.keepGoing if vo.keepGoing
 	# _____________________________
 	# SIGNALS
 	

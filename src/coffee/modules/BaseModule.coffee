@@ -43,6 +43,7 @@ class BaseModule extends AbstractModule
 	bind: =>
 
 	show: =>
+		
 		#console.log "********** show", @
 		@onShowStart()
 		Transition.fadeIn @$elt, @onShowEnd

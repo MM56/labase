@@ -1,45 +1,45 @@
 <!DOCTYPE html>
 <html class="{{detect.device}} {{detect.os}} {{detect.browser}} {{GLOBAL.locale}} no-js" lang="{{GLOBAL.locale}}">
 	<head>
-		<title>{{l10n.SHARE.share.title}}</title>
+		<title>{{l10n.share.title}}</title>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta http-equiv="cleartype" content="on" />
 		<meta http-equiv="expires" content="0" />
-		<meta name="description" content="{{l10n.SHARE.share.global.fb}}" />
+		<meta name="description" content="{{l10n.share.global.fb}}" />
 		<meta name="robots" content="index, follow" />
 		<meta name="revisit-after" content="3 days" />
 		<meta name="audience" content="all" />
-		<meta name="author" content="Mondelēz International" />
-		<meta name="copyright" content="Mondelēz International" />
-		<meta name="publisher" content="Mondelēz International" />
+		<meta name="author" content="" />
+		<meta name="copyright" content="" />
+		<meta name="publisher" content="" />
 		<!-- MOBILE -->
 		<meta name='HandheldFriendly' content='true' />
 		<meta name='format-detection' content='telephone=no' />
 		<meta name="msapplication-tap-highlight" content="no">
-		<meta name="apple-mobile-web-app-title" content="{{l10n.SHARE.share.title}}" />
-		<meta name="apple-mobile-web-app-capable" content="no" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+		<meta name="apple-mobile-web-app-title" content="{{l10n.share.title}}" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="white" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no{{^GLOBAL.isDesktop}},minimal-ui{{/GLOBAL.isDesktop}}" />
 		<!-- FB -->
 		<meta property="og:type" content="website" />
-		<meta property="og:title" content="{{l10n.SHARE.share.title}}" />
-		<meta property="og:description" content="{{l10n.SHARE.share.global.fb}}" />
-		<meta property="og:site_name" content="{{l10n.SHARE.share.title}}" />
+		<meta property="og:title" content="{{l10n.share.title}}" />
+		<meta property="og:description" content="{{l10n.share.global.fb}}" />
+		<meta property="og:site_name" content="{{l10n.share.title}}" />
 		<meta property="og:image" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}img/static/share/share_{{GLOBAL.locale}}.jpg" />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
-		<meta property="og:url" content="{{GLOBAL.shareURL}}" />
+		<meta property="og:url" content="{{GLOBAL.baseURL}}" />
 		<!-- TWITTER -->
 		<meta name="twitter:card" content="summary" />
-		<meta name="twitter:title" content="{{l10n.SHARE.share.title}}" />
-		<meta name="twitter:site" content="{{l10n.SHARE.share.title}}" />
+		<meta name="twitter:title" content="{{l10n.share.title}}" />
+		<meta name="twitter:site" content="{{l10n.share.title}}" />
 		<meta name="twitter:image" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}img/static/share/share_{{GLOBAL.locale}}.jpg" />
-		<meta name="twitter:url" content="{{GLOBAL.baseURL}}{{GLOBAL.locale}}" />
+		<meta name="twitter:url" content="{{GLOBAL.baseURL}}" />
 		<!-- GOOGLE -->
 		<meta name="thumbnail" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}img/static/share/60x60.jpg" />
-		<meta itemprop="name" content="{{l10n.SHARE.share.title}}" />
-		<meta itemprop="description" content="{{l10n.SHARE.share.global.fb}}" />
+		<meta itemprop="name" content="{{l10n.share.title}}" />
+		<meta itemprop="description" content="{{l10n.share.global.fb}}" />
 		<!-- LINKS and ICONS -->
 		<link type="text/plain" rel="author" href="/humans.txt" />
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -62,6 +62,9 @@
 			{{/GLOBAL.defaultTemplates}}
 			{{/if}}
 		};
+		var isDesktop = {{#GLOBAL.isDesktop}}true{{/GLOBAL.isDesktop}}{{^GLOBAL.isDesktop}}false{{/GLOBAL.isDesktop}};
+		var isTablet = {{#GLOBAL.isTablet}}true{{/GLOBAL.isTablet}}{{^GLOBAL.isTablet}}false{{/GLOBAL.isTablet}};
+		var isPhone = {{#GLOBAL.isPhone}}true{{/GLOBAL.isPhone}}{{^GLOBAL.isPhone}}false{{/GLOBAL.isPhone}};
 		var l10nJSON = {{{l10n_encoded}}};
 		var manifestJSON = {{{manifest}}};
 		var routesJSON = {{{routes}}};
@@ -72,13 +75,38 @@
 	</head>
 	<body>
 		<div id="root" class="root-module-wrapper">
-			{{> global/header }}
+			{{> notifier/orientation }}
+			{{> modules}}
 			{{> loader/mainLoader }}
 			{{> loader/usualLoader }}
-			{{> modules}}
-			{{> notifier/orientation }}
 		</div>
-		{{>loader/worker}}
+		<script>
+			window.fbAsyncInit = function() {
+				FB.init({
+					appId      : '{{FBAppId}}',
+					xfbml      : true,
+					version    : 'v2.5',
+					display	   : 'async'
+				});
+			};
+
+			(function(d, s, id){
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) {return;}
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
+
+		<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			ga('create', '{{analytics}}', 'auto');
+			ga('send', 'pageview');
+		</script>
 		{{>global/javascripts}}
 	</body>
 </html>

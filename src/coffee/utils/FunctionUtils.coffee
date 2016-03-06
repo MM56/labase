@@ -31,6 +31,14 @@ class FunctionUtils
 
 		return array[closest]
 
+	@randomNumber: (min, max) =>
+		return min + (Math.random() * (max - min))
+
+	@pointSphere: (rad1, rad2, r) =>
+		x = Math.cos(rad1) * Math.cos(rad2) * r
+		z = Math.cos(rad1) * Math.sin(rad2) * r
+		y = Math.sin(rad1) * r
+		return [x, y, z]
 
 	@getCoverSizeImage: (picWidth, picHeight, containerWidth, containerHeight) =>
 		pw = picWidth

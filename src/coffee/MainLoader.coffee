@@ -22,21 +22,33 @@ class MainLoader
 	registerDOM : () =>
 		@$elt = $('#mainLoader')
 
+		@duration = 1.5
+		@ease = Power4.easeInOut
+		@progress = { value : 0 }
+
 	onLoadStart: () =>
-		@isHided = false
+		rAFManager.add @onTick
+
+	onTick: () =>
+		if @progress.value >= 100
+			rAFManager.remove @onTick
 
 	onLoadProgress: (e) =>
 
 	onLoadComplete: () =>
-		@isHided = true
-		@onHideLoader()
+		@onCompleteProgress()
 		
+	onCompleteProgress: () =>
+		@isHided = true
+		setTimeout =>
+			@onHideLoader()
+		, 300
+
 	onHideLoader: () =>
 		if !@isHided
 			@isHided = true
 		else
-			setTimeout =>
-				MM.css @$elt[0], "display", "none"
-				@destroy.dispatch()
-				@unbind()
-			, 300
+			MM.css @$elt[0], "display", "none"
+			@destroy.dispatch()
+			@unbind()
+			rAFManager.remove @onTick

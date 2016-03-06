@@ -1,0 +1,85 @@
+* { box-sizing:border-box;}
+
+html, body {
+	height:100%;
+	width:100%;
+}
+#old-browsers {
+	font-family: 'Arial';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+
+	.old-browsers-content {
+		color: #ffffff;
+		width: 600px;
+		margin:0 auto;
+		position: absolute;
+		top:55%;
+		bottom:0;
+		left:0;
+		right:0;
+		@include transform(translateY(-50%));
+
+		.text {
+				text-align: center;
+				text-transform: uppercase;
+
+			.update {
+				font-size: 24px;
+				font-weight: bold;
+				margin-bottom: 8px;;
+			}
+
+			.system {
+				width: 390px;
+				margin: 0 auto;
+				font-size: 12px;
+			}
+		}
+
+		.browser-select {
+			width:450px;
+			margin:50px auto 0px auto;
+
+			.chrome,
+			.firefox {
+				@include inline-block;
+				vertical-align: top;
+				width: 50%;
+
+				.browser-name {
+					width: 185px;
+					text-align: center;
+					font-weight: bold;
+					text-transform: uppercase;
+					font-size: 12px;
+					color:#ffffff;
+					padding: 20px 0;
+					background-color:#087cea;
+					margin-top: 4px;
+				}
+			}
+
+			.img, .browser-name {
+				margin: 0 auto;
+			}
+			
+			.chrome-img {
+				width: 185px;
+				height: 185px;
+				background:url($path-img + "static/common/logo-chrome.png") no-repeat;
+			}
+
+			.firefox-img {
+				width: 185px;
+				height: 185px;
+				background:url($path-img + "static/common/logo-mozilla.png") no-repeat;
+			}
+
+		}
+
+	}
+}

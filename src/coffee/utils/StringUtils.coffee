@@ -17,3 +17,6 @@ class StringUtils
 		if str.lastIndexOf("/") == str.length - 1
 			return str.substring 0, str.lastIndexOf("/")
 		return str
+
+	@ucFirst: (str) =>
+		return str.charAt(0).toUpperCase() + str.slice(1)

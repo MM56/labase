@@ -1,17 +1,2 @@
 {
-	"hello": "hello",
-	"products": [
-		{
-			"name": "citron"
-		},
-		{
-			"name": "menthe"
-		}
-	],
-	"a": {
-		"b": "c"
-	},
-	"routes": {
-		"products": "products"
-	}
 }

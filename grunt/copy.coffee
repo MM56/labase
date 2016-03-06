@@ -57,3 +57,9 @@ module.exports = (grunt) ->
 			src: "**/*"
 			dest: "<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/pdf"
 			expand: true
+
+		workers:
+			cwd: '<%= globalConfig.assetsPath %>/workers'
+			src: "**/*"
+			dest: "<%= globalConfig.assetsFolder %>/<%= globalConfig.version %>/workers"
+			expand: true

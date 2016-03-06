@@ -3,6 +3,7 @@
 
 // Utils
 @import "utils/variables";
+@import "utils/compact";
 @import "utils/browser-support";
 @import "utils/sprites";
 @import "utils/sprites-variables";
@@ -20,6 +21,9 @@
 @import "utils/background-clip";
 @import "utils/background-size";
 @import "utils/custom-animations";
+@import "utils/scrollbar";
+@import "utils/flexbox";
+@import "utils/clip-path";
 
 // Base
 @import "base/reset";
@@ -32,8 +36,7 @@
 @import "components/arrows";
 
 // Modules
+@import "modules/stats";
 @import "modules/index";
 @import "modules/loader";
-@import "modules/page";
-
 

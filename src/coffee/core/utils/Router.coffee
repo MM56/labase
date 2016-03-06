@@ -81,6 +81,7 @@ class Router
 
 	parseResponse: (matchedRoute) =>
 		if matchedRoute?
+			#console.log matchedRoute
 			if matchedRoute.middleware?
 				@matchedRoute = matchedRoute
 				MiddlewareMethods.RESPONSE.addOnce @onMiddlewareResponse
@@ -90,6 +91,7 @@ class Router
 				@nextRoute = @tmpNextRoute
 				@routeMatched.dispatch [matchedRoute]
 		else
+			@routeMatched.dispatch false
 			console.error "No routes matched."
 
 	onMiddlewareResponse: (isPositive) =>

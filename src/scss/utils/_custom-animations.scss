@@ -12,7 +12,7 @@
 		@content;
 	} 
 }
-@include keyframes(rotation_0_360) {
-    0% { @include rotate(0deg) }
-    100% { @include rotate(360deg) }
+@include keyframes(r_360) {
+    0% 		{ @include rotate(0deg) }
+    100% 	{ @include rotate(360deg) }
 }

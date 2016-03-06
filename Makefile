@@ -1,5 +1,5 @@
 # Based on http://ejohn.org/blog/keeping-passwords-in-source-control/
-# 
+#
 # John Resig needed a way to keep sensitive data (e.g. config files with
 # passwords) out of source control. So he decided to encrypt the sensitive data.
 #
@@ -10,10 +10,12 @@
 #        make decrypt
 
 .PHONY: _pwd_prompt decrypt encrypt decrypt_conf encrypt_conf clean_encrypt clean_decrypt
- 
-FILE_DEC=conf/prod.casted5.json
-FILE_ENC=conf/prod.json.cast5
- 
+
+ENV=dev
+
+FILE_DEC=conf/${ENV}.casted5.json
+FILE_ENC=conf/${ENV}.json.cast5
+
 _pwd_prompt:
 	@echo "Contact the author for the password."
 

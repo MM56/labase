@@ -1,0 +1,6 @@
+@mixin clip-path($value) {
+  -webkit-clip-path: $value;
+     -moz-clip-path: $value;
+      -ms-clip-path: $value;
+          clip-path: $value;
+}

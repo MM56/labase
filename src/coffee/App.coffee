@@ -8,6 +8,8 @@ class App
 		@initGlobal()
 
 	initGlobal: =>
+		@tracker = new GATracker()
+		
 		@pixelRatio = window.devicePixelRatio || 1
 		@pixelRatio = 2 if window.devicePixelRatio > 2
 		@pixelRatio += "x"
@@ -19,6 +21,9 @@ class App
 				baseURL: baseURL
 				basePath: basePath
 				locale: locale
+				isDesktop: isDesktop
+				isTablet: isTablet
+				isPhone: isPhone
 				assetsPath: assetsPath
 				assetsBaseURL: assetsBaseURL
 
@@ -27,15 +32,11 @@ class App
 		@manifestLoader.isPhone = W.isPhone
 		@manifestLoader.isTablet = W.isTablet
 		@manifestLoader.isDesktop = W.isDesktop
-		@manifestLoader.isWebp = W.isWebp
 
 		rAFManager.init()
 		VScroll.init()
 
 		@mainLoader = new MainLoader()
-
-		if W.html.hasClass "csstransforms3d" && ["staging", "prod"].indexOf(env) == -1
-			FunctionStats.init()
 
 		@init()
 
@@ -82,8 +83,13 @@ class App
 
 	initModulesDefault: =>
 		@loader = new LoaderModule()
+		#SoundManager.init()
+
 
 	onRoutesMatched: (matchedRoutes) =>
-		ModulesManager.switch matchedRoutes
+		if matchedRoutes
+			ModulesManager.switch matchedRoutes
+		# else
+		# 	app.router.navigate "/404"
 
 new App()

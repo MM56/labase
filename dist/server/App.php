@@ -344,9 +344,6 @@ class App {
 				$detect["browser"] = "ie";
 				if(count($version) > 1) {
 					$detect["browser"] .= " ie" . $version[1];
-					if($version[1] < 10) {
-						$oldBrowser = true;
-					}
 				}
 			} elseif(preg_match('/firefox/i', $this->detect->getUserAgent())) {
 				$detect["browser"] = "firefox";
@@ -360,6 +357,8 @@ class App {
 				$detect["browser"] = "";
 			}
 		}
+
+		$oldBrowser = $this->isOldBrowser($detect["browser"]);
 
 		// old browsers
 		if(!$this->config["compileTemplates"]) {
@@ -397,11 +396,14 @@ class App {
 			"currentURL" => $this->config["currentURL"],
 			"locale" => $this->currentLocale,
 			"basePath" => $this->config["basePath"],
-			"isDesktop" => (($detect["device"] == "desktop" || $detect["device"] == "tablet") && strpos($this->config["currentURL"],'/mobile') === false),
+			"isDesktop" => $detect["device"] == "desktop"  ? true: false,
+			"isTablet" => $detect["device"] == "tablet"  ? true: false,
+			"isPhone" => $detect["device"] == "phone"  ? true: false,
 			"noLocaleInRoute" => $noLocaleInRoute,
 			"assetsPath" => $this->config["assetsPath"],
 			"assetsBaseURL" => $this->config["assetsBaseURL"]
 		);
+
 
 		// datas for template engine
 		$this->content = array_merge(array(
@@ -421,24 +423,26 @@ class App {
 		}
 	}
 
-	protected function isSoonBrowser($browser) {
+	protected function isOldBrowser($browser) {
 		if(array_key_exists("force", $_GET)) {
 			return true;
 		}
 		switch ($browser) {
 			case "firefox":
-				if(floatval($this->detect->version("Firefox")) < 40) {
+				if(floatval($this->detect->version("Firefox")) < 42) {
 					return true;
 				}
 				break;
 			case "safari":
-				if(floatval($this->detect->version("Safari")) < 8) {
+				if(floatval($this->detect->version("Safari")) < 9) {
 					return true;
 				}
 				break;
 			default:
-				if(strpos($browser, "ie") === 0 && !preg_match('/opera|webtv/i', $this->detect->getUserAgent()) && (preg_match('/msie\s(\d*)/i', $this->detect->getUserAgent(), $version) || preg_match("/trident\/.*rv:(\d*)/i", $this->detect->getUserAgent(), $version))) {
-					if(intval($version[1]) < 11) {
+
+				if(strpos($browser, "ie") === 0) {
+					preg_match('!\d+!', $browser, $version);
+					if(intval($version[0]) < 11) {
 						return true;
 					}
 				}

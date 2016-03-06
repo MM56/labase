@@ -6,14 +6,14 @@ module.exports =
 			tasks: ['sass']
 		coffee:
 			files: ['src/coffee/**/*.coffee']
-			tasks: ['newer:coffee:dev']
+			tasks: ['coffee:dev']
 		img:
 			files: ['src/img/static/**/*']
 			tasks: ['newer:copy:img', 'deleteSync']
 		sprites:
 			files: ['src/img/sprites/**/*.png']
 			tasks: ['sprites']
-		magipack:
+		packer:
 			files: ['src/datas/manifest.json']
 			tasks: ['packImages']
 		svgs:

@@ -59,7 +59,7 @@ class Video
 			@elt.play()
 
 	bind: () =>
-		W.add @
+		Events.RESIZED.add @onResize
 		@$elt.on "loadstart", @onLoadStart
 		@$elt.on "loadedmetadata", @onLoadedMetaData
 		@$elt.on "canplay", @onCanPlay
@@ -79,7 +79,7 @@ class Video
 		@onFullscreen()
 
 	unbind: () =>
-		W.remove @
+		Events.RESIZED.remove @onResize
 		@$elt.off "loadstart", @onLoadStart
 		@$elt.off "loadedmetadata", @onLoadedMetaData
 		@$elt.off "canplay", @onCanPlay
@@ -153,6 +153,8 @@ class Video
 	exitFullscreen: =>
 		if @elt.exitFullscreen
 			@elt.exitFullscreen()
+		else if @elt.webkitExitFullScreen
+			@elt.webkitExitFullScreen()
 		else if  @elt.mozCancelFullScreen
 			@elt.mozCancelFullScreen()
 		else if @elt.webkitCancelFullScreen
@@ -192,7 +194,7 @@ class Video
 		#console.log "____ONLOADEDMETADATA", @idSrc
 
 	onCanPlay: (e) =>
-		console.log "____ONCANPLAY", @id
+		console.log "____ONCANPLAY"
 		@onVideoLoaded.dispatch(@)
 
 	onError: (e) =>
@@ -239,7 +241,7 @@ class Video
 	seekTo: (time) =>
 		try
 			@elt.currentTime = parseFloat(time)
-		catch
+		catch e
 			console.log e
 		#console.log "____SEEK", @idSrc
 

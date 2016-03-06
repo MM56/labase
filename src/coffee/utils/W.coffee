@@ -1,8 +1,5 @@
 class W
 
-	@_els 			: []
-	@_handlers 		: {}
-
 	@init: () =>
 		@window = $(window)
 		@document = $(document)
@@ -17,42 +14,39 @@ class W
 		@isNoMobile = @html.hasClass "nomobile"
 		@isTouch = @html.hasClass "touch"
 		@isIE = @html.hasClass "ie"
-		@isWebp = Modernizr.webp
+		@isFirefox = @html.hasClass "firefox"
+		@isSafari = @html.hasClass "safari"
 
 		if @isTablet || @isPhone
 			FastClick.attach(@body[0])
-
-		if @isTablet
-			@orientationNotifier.find('.anim').addClass "sprite-rotate_tablet_icon"
-		else if @isPhone
-			@orientationNotifier.find('.anim').addClass "sprite-rotate_phone_icon"
+			if @isTablet
+				@orientationNotifier.find('.anim').addClass "sprite-rotate_tablet_icon"
+			else
+				@orientationNotifier.find('.anim').addClass "sprite-rotate_phone_icon"
 
 		@onResize()
 		@bind()
 
 	@bind: =>
-		@window.on "resize", @onResize
-		@body.on MouseEvent.CLICK, "a[rel='internal']", (event) ->
-			event.preventDefault()
-			event.stopPropagation()
-			$this = $(this)
-			return if $this.hasClass("disabled")
-			app.router.navigate $this.attr("href") if $this.attr("href")?
+		Events.SCROLLED.add @onScroll
+		@window.on Events.CLICK, "a[rel='internal']", @onClick
+		@window.on(Events.RESIZE, @onResize)
 
-		if @isTablet
-			@document.bind "visibilitychange", @onResize
-			@document.bind MouseEvent.MOUSE_OVER, @onTouchStart
+		# if @isTablet
+		# 	@document.bind "visibilitychange", @onResize
+		# 	@document.bind Events.MOUSE_OVER, @onTouchStart
 
-		if @isPhone
-			@document.bind MouseEvent.MOUSE_MOVE, @onTouchMove
+		# if @isPhone
+		# 	@document.bind Events.MOUSE_MOVE, @onTouchMove
 
-	@add: (el) =>
-		@_els.push el
+	@onClick: (e) =>
+		e.preventDefault()
+		e.stopPropagation()
+		$this = $(this)
+		return if $this.hasClass("disabled")
+		app.router.navigate $this.attr("href") if $this.attr("href")?
 
-	@remove: (obj) =>
-		for item,i in @_els
-			if item == obj
-				@_els.splice(i, 1)
+	@onScroll: (e) =>
 
 	@onResize: () =>
 		@ww = window.innerWidth
@@ -62,13 +56,12 @@ class W
 		if @isTablet
 			if @ww > @wh
 				MM.css @html[0], "height", @wh + "px"
-				#@window[0].scrollTo(0,0)
 				@hideOrientationNotifier()
 			else
 				MM.css @html[0], "height", "100%"
 				@displayOrientationNotifier()
 
-		if @isPhone
+		else if @isPhone
 			if @html.hasClass "androidos"
 				if (@wo % 180) == 0
 					@hideOrientationNotifier()
@@ -80,14 +73,10 @@ class W
 				else
 					@displayOrientationNotifier()
 
-		for el in @_els
-			el.onResize()
+		Events.RESIZED.dispatch()
 
 	@displayOrientationNotifier: =>
 		MM.css @orientationNotifier[0], "display", "block"
-		if @isPhone
-			MM.css @html[0], "overflow", "hidden"
-			MM.css @body[0], "overflow", "hidden"
 
 	@hideOrientationNotifier: =>
 		MM.css @orientationNotifier[0], "display", "none"

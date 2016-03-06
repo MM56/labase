@@ -1,6 +1,7 @@
 class rAFManager
 
 	@datas: null
+	@stats: null
 
 	@init: =>
 		@datas = []
@@ -22,14 +23,14 @@ class rAFManager
 				@remove data.cb if data.once
 			i--
 
-	@add: (cb, fps = 60, delay = 0, once = false) =>
+	@add: (cb, fps = 1000, delay = 0, once = false) =>
 		return false if typeof cb != "function"
 		data = {cb: cb, fps: fps, once: once, delayCount: 0, delay: delay, lastTime: (new Date()).getTime()}
 		@datas.push data
 		data.id = @datas.length
 		return data
 
-	@addOnce: (cb, fps = 60, delay = 0) =>
+	@addOnce: (cb, fps = 1000, delay = 0) =>
 		return @add cb, fps, delay, true
 
 	@remove: (cb) =>

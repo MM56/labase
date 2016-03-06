@@ -20,16 +20,16 @@ MM.Loader = (function() {
 		this.onFileLoad = null;
 		this.onComplete = null;
 
-		this.worker = getWorkerInstance(document.getElementById("worker-xhr").textContent);
-		self = this;
+		this.worker = getWorkerInstance(basePath + assetsPath + "workers/worker.js");
+		_this = this;
 		this.worker.onmessage = function(event) {
 			data = event.data;
 			switch (data.proxy) {
 				case "onprogress":
-					self.handleFileProgress(data.data);
+					_this.handleFileProgress(data.data);
 					break;
 				case "oncomplete":
-					self.handleFileComplete(data.data);
+					_this.handleFileComplete(data.data);
 					break;
 			}
 		}
@@ -222,7 +222,6 @@ MM.Loader = (function() {
 					resultData = data;
 				}
 		}
-
 		if (tag) {
 			if (item.type === "css") {
 				tag.href = item.src;
@@ -279,7 +278,7 @@ MM.Loader = (function() {
 			item.type = this.getType(item.extension);
 		}
 
-		if (item.id === null || item.idæ === "") {
+		if (item.id === null || item.id === "") {
 			item.id = item.src;
 		}
 
@@ -308,6 +307,7 @@ MM.Loader = (function() {
 				return "css";
 			case 'svg':
 				return "svg";
+			case 'obj':
 			default:
 				return "text";
 		}

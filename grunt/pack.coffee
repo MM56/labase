@@ -2,6 +2,7 @@ execSync = require('child_process').execSync
 fs = require('fs')
 path = require('path')
 Handlebars = require('handlebars')
+packer = require("mm-packer")
 
 module.exports = (grunt) ->
 
@@ -45,7 +46,7 @@ module.exports = (grunt) ->
 				continue
 
 			# find images
-			matched = file.src.match(/.*\.(jpg|jpeg|gif|png)/i)
+			matched = file.src.match(/.*\.(jpg|jpeg|gif|png|obj)/i)
 			if matched?
 				src = file.src
 				src = file.src.replace('.' + matched[1], '.' + batchSupport) if file.support? && file.support.indexOf(batchSupport) != -1
@@ -72,24 +73,24 @@ module.exports = (grunt) ->
 			# move images to tmp folder
 			tmpImagesPath = batchPath + "/tmp"
 			for file in files
-
 				grunt.file.copy options.assetsFolder + "/" + options.version + "/" + file.src, tmpImagesPath + "/" + file.src
 			if batchSupport?
-				exec 'packImages -p ' + tmpImagesPath + ' -o ' + batchPath + ' -n ' + "images." + batchSupport
+				packer tmpImagesPath, batchPath, "pack." + batchSupport
 			else
-				exec 'packImages -p ' + tmpImagesPath + ' -o ' + batchPath + ' -n ' + "images"
+				packer tmpImagesPath, batchPath, "pack"
 
 			grunt.file.delete tmpImagesPath
+
 			if batchSupport?
-				batchFiles.push {id: "packConf." + batchSupport,  src: "packs/" + batchId + "/images." + batchSupport + ".json", mapping: files}
-				batchFiles.push {id: "packFile." + batchSupport, src: "packs/" + batchId + "/images." + batchSupport + ".pack"}
+				batchFiles.push {id: "packConf." + batchSupport,  src: "{{GLOBAL.assetsBaseURL}}{{GLOBAL.assetsPath}}packs/" + batchId + "/pack." + batchSupport + ".json", mapping: files}
+				batchFiles.push {id: "packFile." + batchSupport, src: "{{GLOBAL.assetsBaseURL}}{{GLOBAL.assetsPath}}packs/" + batchId + "/pack." + batchSupport + ".pack"}
 			else
-				batchFiles.push {id: "packConf", src: "packs/" + batchId + "/images.json", mapping: files}
-				batchFiles.push {id: "packFile", src: "packs/" + batchId + "/images.pack"}
+				batchFiles.push {id: "packConf", src: "{{GLOBAL.assetsBaseURL}}{{GLOBAL.assetsPath}}packs/" + batchId + "/pack.json", mapping: files}
+				batchFiles.push {id: "packFile", src: "{{GLOBAL.assetsBaseURL}}{{GLOBAL.assetsPath}}packs/" + batchId + "/pack.pack"}
 
 			return batchFiles
 
-	grunt.registerTask "packImages", () ->
+	grunt.registerTask "pack", () ->
 		options = grunt.option "globalConfig"
 		manifestData = grunt.file.readJSON(options.srcPath + "/datas/manifest.json")
 		packPath = options.assetsFolder + "/" + options.version + "/packs"

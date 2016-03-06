@@ -19,8 +19,10 @@ module.exports = (grunt) ->
 
 		modulesRoutesPath = datasPath + "/modules_routes.json"
 		modulesRoutesData = grunt.file.readJSON(modulesRoutesPath)
-		tplPath = buildPath + "/shared/tpl"
-		partialsPath = tplPath + "/partials"
+		tplAbsolutePath = buildPath + "/shared/tpl"
+		partialsAbsolutePath = tplAbsolutePath + "/partials"
+		tplRelativePath = "shared/tpl"
+		partialsRelativePath = tplRelativePath + "/partials"
 
 		srcPath = options.srcPath
 		coffeePath = srcPath + "/coffee"
@@ -44,7 +46,7 @@ module.exports = (grunt) ->
 					baseCoffeePath += "/" + moduleTplPattern.substring 0, moduleTplPattern.lastIndexOf("/")
 					modulePath += "/" + moduleTplPattern.substring 0, moduleTplPattern.lastIndexOf("/")
 
-				moduleTplPath = partialsPath + "/" + moduleTplPattern
+				moduleTplPath = partialsAbsolutePath + "/" + moduleTplPattern
 
 				# add batch in manifest.json
 				found = false
@@ -53,7 +55,7 @@ module.exports = (grunt) ->
 						if batch.id == moduleId
 							found = true
 				if !found
-					manifestData.push {id: moduleId, files: [{id: "tpl", src: partialsPath + "/" + moduleTplPattern + ".hbs"}]}
+					manifestData.push {id: moduleId, files: [{id: "tpl", src: partialsRelativePath + "/" + moduleTplPattern + ".hbs"}]}
 
 				# add tpl
 				if !grunt.file.exists moduleTplPath + ".hbs"

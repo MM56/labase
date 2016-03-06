@@ -2,27 +2,50 @@
 	"modules": [
 		{
 			"id": "a",
-			"routes": ["/a", "/", "/mobile/a", "/mobile"],
+			"routes": ["/a"],
 			"modules": [
 				{
-					"id": "e",
-					"routes": ["/e","/mobile/e"]
+					"id": "a1"
 				},
 				{
-					"id": "f",
-					"routes": ["/f","/mobile/f"]
+					"id": "a2"
 				}
 			]
 		},
 		{
+			"id": "h"
+		},
+		{
 			"id": "b",
-			"routes": ["/b","/mobile/b"],
+			"routes": ["/b"],
 			"modules": [
 				{
+					"id": "c",
+					"modules": [
+						{
+							"id": "e",
+							"routes": ["/e"]
+						},
+						{
+							"id": "f",
+							"routes": ["/f"]
+						}
+					]
+				},
+				{
 					"id": "d",
-					"routes": ["/d","/mobile/d"]
+					"modules": [
+						{
+							"id": "g"
+						}
+					]
 				}
 			]
+		},
+		{
+			"id": "page",
+			"routes": ["/page/:id"],
+			"tplPattern": "page{{id}}"
 		}
 	]
 }

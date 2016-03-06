@@ -13,7 +13,7 @@ $buildInfoFile = dirname(__FILE__) . "/shared/datas/buildInfo.json";
 $buildInfo = App::getArrayContentFrom($buildInfoFile);
 $confFile = dirname(__FILE__) . "/shared/conf/" . $buildInfo["env"] . ".casted5.json";
 $conf = App::getArrayContentFrom($confFile);
-$svgFile = dirname(__FILE__) . "/shared/datas/" . "svgs.json";
+$svgFile = dirname(__FILE__) . "/shared/datas/svgs.json";
 $svg = App::getArrayContentFrom($svgFile);
 $svg_encoded = json_encode($svg);
 
@@ -38,7 +38,7 @@ $domain = getDomain($_SERVER["HTTP_HOST"]);
 $extraDatas = array(
 	"domain" => $domain,
 	"svg" => $svg,
-	"svg_encoded" => $svg_encoded
+	"svg_encoded" => $svg_encoded,
 );
 
 if(array_key_exists("debug", $_GET) && $buildInfo["env"] != "prod") {

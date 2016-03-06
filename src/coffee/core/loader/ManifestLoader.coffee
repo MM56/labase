@@ -43,7 +43,7 @@ class ManifestLoader
 
 		if nbFilesCached == nbFiles
 			@onFilesLoaded()
-		
+
 		#only once
 		if !loader?
 			loader = new MM.Loader()
@@ -69,12 +69,16 @@ class ManifestLoader
 				packConf = packConfCached.item
 				packFile = Cache.get(batchId + separator + "packFile").item
 				mapping = packConfCached.mapping
-				mp = new Magipack(packFile, packConf)
+				mp = new Unpacker(packFile, packConf)
 				for mappedObject in mapping
-					img = new Image()
-					img.src = mp.getURI(mappedObject.src)
-					Cache.set(batchId + separator + mappedObject.id, {item: img})
-					
+					match = mappedObject.src.match(/.*\.(jpg|jpeg|gif|png|obj)/i)
+					if match[1] == "obj"
+						d = mp.getURI(mappedObject.src)
+					else
+						d = new Image()
+						d.src = mp.getURI(mappedObject.src)
+					Cache.set(batchId + separator + mappedObject.id, {item: d})
+
 		tplSuffix = separator + "tpl"
 		if id.indexOf(tplSuffix) == id.length - tplSuffix.length
 			@tplComplete.dispatch(Cache.get(id).item.slice(0), id.substring(0, id.indexOf(tplSuffix)))
@@ -107,6 +111,7 @@ class ManifestLoader
 								fileId = manifest.id + separator + file.id + i
 								data = $.extend({}, @datas, {sequence: i})
 								src = @getFileSrc(file, data)
+
 								files.push {id: fileId, src: src, infos: {batchId: manifest.id, fileId: file.id + i, data: file}}
 						else
 							src = @getFileSrc(file, @datas)
@@ -130,19 +135,25 @@ class ManifestLoader
 	getPrefix: () =>
 		prefix = baseURL
 		if (prefix.indexOf('http://') == -1 && prefix.indexOf('https://') == -1)
-			prefix = "http:" + prefix
+			prefix = window.location.protocol + prefix
 		return prefix
+
+	getFilesByBatchId: (batchId) =>
+		handles = Cache.getAll()
+		files = []
+		for key, value of handles
+			k = key + separator
+			if k.indexOf(batchId + separator) != -1
+				files.push { id: key, item: value}
+		return files
 
 	getFileSrc: (file, data) =>
 		src = file.src
 		src = TemplateRenderer.compile(file.src, data) if data?
-		if data.GLOBAL.assetsBaseURL? && data.GLOBAL.assetsPath?
+		if src.indexOf('http://') == -1 && src.indexOf('https://') == -1
 			prefix = @getPrefix()
-			switch file.id
-				when "packConf", "packFile"
-					src = prefix + data.GLOBAL.assetsPath + src
-				else
-					src = prefix + StringUtils.removeLeadingSlash(src)
+			prefix += "/" if prefix.substring(prefix.length-1) != "/"
+			src = prefix + StringUtils.removeLeadingSlash(src)
 		return src
 
 	addData: (data) =>
