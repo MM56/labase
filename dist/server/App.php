@@ -10,23 +10,25 @@ class App {
 
 	protected $config = array(
 		"locales" => array("en"),
-		"baseURL" => "",
-		"currentURL" => "",
-		"basePath" => "/",
-		"manifestFile" => "{{basePath}}datas/manifest.json",
-		"l10nFile" => "{{basePath}}datas/l10n/{{locale}}.json",
-		"modulesRoutesFile" => "{{basePath}}datas/modules_routes.json",
-		"javascriptsFile" => "{{basePath}}datas/javascripts.json",
-		"layoutsFolder" => "{{basePath}}tpl/layouts",
-		"partialsFolder" => "{{basePath}}tpl/partials",
-		"defaultLayoutName" => "default",
-		"compileTemplates" => false,
 		"env" => "dev",
+		"baseURL" => "",
+		"basePath" => "/",
+		"currentURL" => "",
 		"assetsPath" => "",
 		"assetsBaseURL" => "/",
+		"layoutsFolder" => "",
+		"partialsFolder" => "",
+		"modulesRoutesFile" => "",
+		"javascriptsFile" => "",
+		"l10nFile" => "",
+		"manifestFile" => "",
+		"svgsFile" => "",
+		"defaultLayoutName" => "default",
+		"compileTemplates" => false,
 		"extraDatas" => array(),
 		"forceMobileRedirect" => "mobile"
 	);
+
 	protected $currentLocale;
 	protected $l10n;
 	protected $content;
@@ -35,7 +37,6 @@ class App {
 	protected $noLocaleInRoute;
 	protected $forceLocaleRedirect;
 	protected $layout;
-
 
 	public function __construct(array $configOptions = array()) {
 		$this->detect = new Mobile_Detect();
@@ -81,6 +82,8 @@ class App {
 			$this->content["GLOBAL"] = $globalContent;
 		}
 
+		$this->content["header"] = $this->getHeader($route);
+
 		// template engine rendering
 		$loader = new Handlebars\Loader\FilesystemLoader($this->config["layoutsFolder"], array("extension" => ".hbs"));
 		$tplRenderer = new Handlebars\Handlebars(array(
@@ -88,6 +91,7 @@ class App {
 			"partials_loader" => $partialsLoader
 		));
 		$tplRenderer->addHelper("render", new Handlebars\Helper\RenderHelper());
+		$tplRenderer->addHelper("lookup", new Handlebars\Helper\LookupHelper());
 		$tplRenderer->addHelper("IfEqual", new Handlebars\Helper\IfEqualHelper());
 		return $tplRenderer->render($this->layout, $this->content);
 	}
@@ -97,10 +101,40 @@ class App {
 		$this->ensurePath();
 		$this->initTemplateEngine();
 		$this->loadL10n();
+		$this->loadSvgs();
 		$this->loadManifest();
 		$this->loadModulesRoutes();
 		$this->buildModulesList();
 		$this->buildContent();
+	}
+
+	private function getHeader($route)
+	{
+		$methodGetShareDatas = (isset($_GET['method']) && $_GET['method'] == 'getShareDatas');
+
+		if($methodGetShareDatas && isset($_POST['route']))
+			$route = preg_replace('/[^A-Za-z0-9\-\_\/]/', '', $_POST['route']);
+
+		$datas = $this->l10n['HEADER_META'];
+
+		$header = $datas[0];// copy array
+		foreach($datas as $data)
+		{
+			if(isset($data['route']) && $data['route'] == $route)
+			{
+				if(isset($data['title'])) $header['title'] = $data['title'];
+				if(isset($data['desc'])) $header['desc'] = $data['desc'];
+				if(isset($data['img'])) $header['img'] = $data['img'];
+				if(isset($data['share'])) $header['share'] = $data['share'];
+			}
+		}
+		$header['route'] = $route;
+		$header['json'] = json_encode($header);
+
+		if($methodGetShareDatas)
+			exit($header['json']);
+
+		return $header;
 	}
 
 	protected function ensureLocale() {
@@ -227,6 +261,12 @@ class App {
 			"locale" => $this->currentLocale
 		));
 		$this->manifest = json_encode(self::getArrayContentFrom($manifestFilePath));
+	}
+
+	protected function loadSvgs() {
+		$tplRenderer = new Handlebars\Handlebars();
+		$svgsFilePath = $tplRenderer->render($this->config["svgsFile"], array());
+		$this->svgs = self::getArrayContentFrom($svgsFilePath);
 	}
 
 	protected function loadL10n() {
@@ -410,6 +450,8 @@ class App {
 			"env" => $this->config["env"],
 			"l10n" => $this->l10n,
 			"l10n_encoded" => json_encode($this->l10n),
+			"svgs" => $this->svgs,
+			"svgs_encoded" => json_encode($this->svgs),
 			"manifest" => $this->manifest,
 			"routes" => $this->modulesRoutes,
 			"detect" => $detect,

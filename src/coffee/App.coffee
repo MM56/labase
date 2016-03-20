@@ -16,7 +16,7 @@ class App
 
 		@datas =
 			pixelRatio: @pixelRatio
-			svg: svg
+			svgs: svgs
 			GLOBAL:
 				baseURL: baseURL
 				basePath: basePath

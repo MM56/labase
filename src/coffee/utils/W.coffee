@@ -1,24 +1,24 @@
 class W
 
 	@init: () =>
-		@window = $(window)
-		@document = $(document)
-		@html = $('html')
-		@body = $('body')
-		@root = $('#root,html,body')
+		@$window = $(window)
+		@$document = $(document)
+		@$html = $('html')
+		@$body = $('body')
+		@$root = $('#root')
 		@orientationNotifier = $('#orientation-notifier')
-		@isPhone = @html.hasClass "phone"
-		@isIOS = @html.hasClass "ios"
-		@isTablet = @html.hasClass "tablet"
-		@isDesktop = @html.hasClass "desktop"
-		@isNoMobile = @html.hasClass "nomobile"
-		@isTouch = @html.hasClass "touch"
-		@isIE = @html.hasClass "ie"
-		@isFirefox = @html.hasClass "firefox"
-		@isSafari = @html.hasClass "safari"
+		@isPhone = @$html.hasClass "phone"
+		@isIOS = @$html.hasClass "ios"
+		@isTablet = @$html.hasClass "tablet"
+		@isDesktop = @$html.hasClass "desktop"
+		@isNoMobile = @$html.hasClass "nomobile"
+		@isTouch = @$html.hasClass "touch"
+		@isIE = @$html.hasClass "ie"
+		@isFirefox = @$html.hasClass "firefox"
+		@isSafari = @$html.hasClass "safari"
 
 		if @isTablet || @isPhone
-			FastClick.attach(@body[0])
+			FastClick.attach(@$body[0])
 			if @isTablet
 				@orientationNotifier.find('.anim').addClass "sprite-rotate_tablet_icon"
 			else
@@ -29,15 +29,15 @@ class W
 
 	@bind: =>
 		Events.SCROLLED.add @onScroll
-		@window.on Events.CLICK, "a[rel='internal']", @onClick
-		@window.on(Events.RESIZE, @onResize)
+		@$window.on Events.CLICK, "a[rel='internal']", @onClick
+		@$window.on(Events.RESIZE, @onResize)
 
 		# if @isTablet
-		# 	@document.bind "visibilitychange", @onResize
-		# 	@document.bind Events.MOUSE_OVER, @onTouchStart
+		# 	@$document.bind "visibilitychange", @onResize
+		# 	@$document.bind Events.MOUSE_OVER, @onTouchStart
 
 		# if @isPhone
-		# 	@document.bind Events.MOUSE_MOVE, @onTouchMove
+		# 	@$document.bind Events.MOUSE_MOVE, @onTouchMove
 
 	@onClick: (e) =>
 		e.preventDefault()
@@ -55,14 +55,14 @@ class W
 
 		if @isTablet
 			if @ww > @wh
-				MM.css @html[0], "height", @wh + "px"
+				MM.css @$html[0], "height", @wh + "px"
 				@hideOrientationNotifier()
 			else
-				MM.css @html[0], "height", "100%"
+				MM.css @$html[0], "height", "100%"
 				@displayOrientationNotifier()
 
 		else if @isPhone
-			if @html.hasClass "androidos"
+			if @$html.hasClass "androidos"
 				if (@wo % 180) == 0
 					@hideOrientationNotifier()
 				else
@@ -81,8 +81,8 @@ class W
 	@hideOrientationNotifier: =>
 		MM.css @orientationNotifier[0], "display", "none"
 		if @isPhone
-			MM.css @html[0], "overflow", "visible"
-			MM.css @body[0], "overflow", "visible"
+			MM.css @$html[0], "overflow", "visible"
+			MM.css @$body[0], "overflow", "visible"
 
 	@onTouchStart: (event) =>
 		return if event.target.tagName == 'INPUT'

@@ -13,9 +13,6 @@ $buildInfoFile = dirname(__FILE__) . "/shared/datas/buildInfo.json";
 $buildInfo = App::getArrayContentFrom($buildInfoFile);
 $confFile = dirname(__FILE__) . "/shared/conf/" . $buildInfo["env"] . ".casted5.json";
 $conf = App::getArrayContentFrom($confFile);
-$svgFile = dirname(__FILE__) . "/shared/datas/svgs.json";
-$svg = App::getArrayContentFrom($svgFile);
-$svg_encoded = json_encode($svg);
 
 $baseURL = "http";
 if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") $baseURL .= "s";
@@ -36,9 +33,7 @@ function getDomain($host) {
 
 $domain = getDomain($_SERVER["HTTP_HOST"]);
 $extraDatas = array(
-	"domain" => $domain,
-	"svg" => $svg,
-	"svg_encoded" => $svg_encoded,
+	"domain" => $domain
 );
 
 if(array_key_exists("debug", $_GET) && $buildInfo["env"] != "prod") {
@@ -46,19 +41,20 @@ if(array_key_exists("debug", $_GET) && $buildInfo["env"] != "prod") {
 }
 
 $appConfig = array(
+	"locales" => array("en"),
+	"env" => $buildInfo["env"],
 	"baseURL" => $baseURL,
 	"basePath" => $conf["basePath"],
 	"currentURL" => $currentURL,
-	"locales" => array("en"),
-	"modulesRoutesFile" => $modulesRoutesFile,
+	"assetsPath" => $buildInfo["assetsPath"],
+	"assetsBaseURL" => $conf["assetsBaseURL"],
 	"layoutsFolder" => $layoutsFolder,
 	"partialsFolder" => $partialsFolder,
+	"modulesRoutesFile" => $modulesRoutesFile,
 	"javascriptsFile" => $javascriptsFile,
-	"env" => $buildInfo["env"],
-	"assetsBaseURL" => $conf["assetsBaseURL"],
-	"assetsPath" => $buildInfo["assetsPath"],
 	"l10nFile" => "{{basePath}}shared/datas/l10n/{{locale}}.json",
 	"manifestFile" => "{{basePath}}shared/datas/manifest.json",
+	"svgsFile" => "{{basePath}}shared/datas/svgs.json",
 	"extraDatas" => $extraDatas
 );
 

@@ -24,3 +24,7 @@ class TemplateRenderer
 			$elt.append $compiledTpl
 
 	TemplateRenderer.registerPartial "modules", ""
+
+	Handlebars.registerHelper 'IfEqual', (a, b, opts)  =>
+		return opts.fn @ if(a == b)
+		return opts.inverse @

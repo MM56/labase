@@ -1,45 +1,49 @@
 <!DOCTYPE html>
 <html class="{{detect.device}} {{detect.os}} {{detect.browser}} {{GLOBAL.locale}} no-js" lang="{{GLOBAL.locale}}">
 	<head>
-		<title>{{l10n.share.title}}</title>
+		<title>{{header.title}}</title>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta http-equiv="cleartype" content="on" />
 		<meta http-equiv="expires" content="0" />
-		<meta name="description" content="{{l10n.share.global.fb}}" />
+		<meta name="description" content="{{header.desc}}" />
 		<meta name="robots" content="index, follow" />
 		<meta name="revisit-after" content="3 days" />
 		<meta name="audience" content="all" />
-		<meta name="author" content="" />
-		<meta name="copyright" content="" />
-		<meta name="publisher" content="" />
+		<meta name="author" content="{{l10n.COMMON.author}}" />
+		<meta name="copyright" content="{{l10n.COMMON.author}}" />
+		<meta name="publisher" content="{{l10n.COMMON.author}}" />
 		<!-- MOBILE -->
 		<meta name='HandheldFriendly' content='true' />
+		<meta name="theme-color" content="#06274f" />
 		<meta name='format-detection' content='telephone=no' />
-		<meta name="msapplication-tap-highlight" content="no">
-		<meta name="apple-mobile-web-app-title" content="{{l10n.share.title}}" />
+		<meta name="msapplication-tap-highlight" content="no" />
+		<meta name="application-name" content="{{l10n.COMMON.webapptitle}}" />
+		<meta name="apple-mobile-web-app-title" content="{{l10n.COMMON.webapptitle}}" />
+		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="apple-mobile-web-app-status-bar-style" content="white" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no{{^GLOBAL.isDesktop}},minimal-ui{{/GLOBAL.isDesktop}}" />
 		<!-- FB -->
 		<meta property="og:type" content="website" />
-		<meta property="og:title" content="{{l10n.share.title}}" />
-		<meta property="og:description" content="{{l10n.share.global.fb}}" />
-		<meta property="og:site_name" content="{{l10n.share.title}}" />
-		<meta property="og:image" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}img/static/share/share_{{GLOBAL.locale}}.jpg" />
+		<meta property="og:title" content="{{l10n.COMMON.author}}" />
+		<meta property="og:site_name" content="{{header.title}}" />
+		<meta property="og:description" content="{{header.share}}" />
+		<meta property="og:image" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}{{header.img}}" />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
 		<meta property="og:url" content="{{GLOBAL.baseURL}}" />
 		<!-- TWITTER -->
-		<meta name="twitter:card" content="summary" />
-		<meta name="twitter:title" content="{{l10n.share.title}}" />
-		<meta name="twitter:site" content="{{l10n.share.title}}" />
-		<meta name="twitter:image" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}img/static/share/share_{{GLOBAL.locale}}.jpg" />
-		<meta name="twitter:url" content="{{GLOBAL.baseURL}}" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="{{l10n.COMMON.twitter}}" />
+		<meta name="twitter:title" content="{{l10n.COMMON.author}}" />
+		<meta name="twitter:description" content="{{header.share}}" />
+		<meta name="twitter:image" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}{{header.img}}" />
 		<!-- GOOGLE -->
+		<meta name="google" content="notranslate" />
 		<meta name="thumbnail" content="{{GLOBAL.baseURL}}{{GLOBAL.assetsPath}}img/static/share/60x60.jpg" />
-		<meta itemprop="name" content="{{l10n.share.title}}" />
-		<meta itemprop="description" content="{{l10n.share.global.fb}}" />
+		<meta itemprop="name" content="{{header.title}}" />
+		<meta itemprop="description" content="{{header.share}}" />
 		<!-- LINKS and ICONS -->
 		<link type="text/plain" rel="author" href="/humans.txt" />
 		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -69,7 +73,7 @@
 		var manifestJSON = {{{manifest}}};
 		var routesJSON = {{{routes}}};
 		var noLocaleInRoute = {{GLOBAL.noLocaleInRoute}};
-		var svg = {{{svg_encoded}}};
+		var svgs = {{{svgs_encoded}}};
 		var apiURL = "{{apiURL}}";
 		</script>
 	</head>

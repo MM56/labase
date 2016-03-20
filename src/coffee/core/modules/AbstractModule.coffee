@@ -37,7 +37,7 @@ class AbstractModule
 
 	preload: =>
 
-	onResize: (width, height) =>
+	onResize: () =>
 
 	enter: () =>
 		@show()
@@ -46,7 +46,7 @@ class AbstractModule
 		submodule.onDestroy.addOnce @onSubmoduleDestroy, {submodule: submodule, submodules: @submodules, _this: @}
 		@submodules.push submodule
 
-	onSubmoduleDestroy: =>
+	onSubmoduleDestroy: ->
 		@submodules.splice @submodules.indexOf(@submodule), 1
 
 	exit: (cascade = true) =>

@@ -1,2 +1,15 @@
 {
+	"HEADER_META" : [
+		{
+			"title": "",
+			"desc": "",
+			"img": "",
+			"share":""
+		}
+	],
+	"COMMON": {
+		"author":"",
+		"twitter":"",
+		"webapptitle": ""
+	}
 }

@@ -1,6 +1,6 @@
 class Events
 
-	if "ontouchstart" || "onmsgesturechange" in window
+	if ("ontouchstart" || "onmsgesturechange") in window
 		@SUPPORTS_TOUCH = true
 		@MOUSE_UP = "touchend"
 		@MOUSE_OUT = "touchend"
