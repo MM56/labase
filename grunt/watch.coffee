@@ -15,7 +15,7 @@ module.exports =
 			tasks: ['sprites']
 		packer:
 			files: ['src/datas/manifest.json']
-			tasks: ['packImages']
+			tasks: ['pack']
 		svgs:
 			files: ['src/svg/**/*.svg']
 			tasks: ['svgsjson']
